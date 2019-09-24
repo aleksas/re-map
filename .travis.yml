@@ -1,0 +1,18 @@
+language: python
+python:
+- '3.6'
+- '3.7'
+- 3.7-dev
+- 3.8-dev
+- nightly
+install:
+- pip install -r requirements.txt
+script:
+- pytest
+deploy:
+  provider: pypi
+  user: aleksas
+  password:
+    secure: N3rI9f9yrQr5bPUJNsJrN1csZG8Ze0bv5O/FtMt6z+Pv7j8ni0nfF2Brf3iCKLqpnz3kncB8tcJ7wBacmSE30jB+SjMVIu+/3MCSPGdjacnIXP64v/rSgAXkGYzaMUq2ofBy86/RWjbzBmF/T7CCUgzBN2R0BpQEAu517duRcG0VjKmDo8cPRMVYXejmjHbvIMiGryd2DcH0cAeuT112IUTCbK53jvn75eLn1dbCvCyXI6rBpKbpo6F+R2AoQiZQFxZHTuIQBszk4fziWpqcWE4skPh816aIbHnyjZ2ci+oSS7e8dQgLbwQJdtyT976ddU/QkxdL9XE/gSH6O6cn4CeSKLJS0Xu0+uXotM5ppRGI69ZOkbwObAMZrub+QuNbQTmUsrnVlZZ124dTNZBTNayWhDfXIZWoaKjQzYnRRlhGSbhUwUX7gYaxwmKuSHT4YJOBg4iISC+WiG1pgDJ6j92/0DrO1hFBfuS3cTUZIe+r6fTbiWpXavcXAUf64tJOygn5H3aS+v7QGK5EYfRUToe4R7v7nONfU6f5PlhSEJwhRN+vBVwFnoL4aoLTeeLuMwwU9ZJiU3RkbssrzI2bp+VmyW+9S32AazHGv8I4wnrXx0HA3l1hw8ZM4c3mnnTT249iPYcU0LxmJVGxe8Y6+bw3HcqzrRXBuLYO3ZAz31s=
+  on:
+    python: 3.6
