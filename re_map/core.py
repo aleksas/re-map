@@ -1,6 +1,7 @@
 import re 
 
 __verbose__ = False
+__extended__ = False
 
 def span_len_delta(span_1, span_2):
     return (span_1[1] - span_1[0]) - (span_2[1] - span_2[0])
@@ -106,6 +107,19 @@ def repl(match, replacement_map, modifier_index, replacement_span_map):
 
     return match_string
 
+def decorate(text, text_modified, span_map):
+    text = str(text)
+    text_modified = str(text_modified)
+    for i in range(len(span_map)):
+        so, to = span_map[i]
+        a = so[1] - so[0]
+        b = to[1] - to[0]
+        v = '{:x}'.format(i).upper()
+        text = text[0:so[0]] + a*v + text[so[1]:]
+        text_modified = text_modified[0:to[0]] + b*v + text_modified[to[1]:]
+    
+    return text, text_modified
+
 def process(text, modifiers):
     text = str(text)
     replacement_span_map = []
@@ -124,5 +138,8 @@ def process(text, modifiers):
 
         if(__verbose__):
             print ('out:', text, i)
+
+        if __extended__:
+            pass
 
     return text, [(a, b) for a,b,_,_ in replacement_span_map]
