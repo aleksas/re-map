@@ -137,6 +137,7 @@ def process(text, modifiers):
         )
 
         if(__verbose__):
+            print ( [(a, b) for a,b,_,_ in replacement_span_map] )
             print ('out:', text, i)
 
         if __extended__:
