@@ -121,26 +121,28 @@ def decorate(text, text_modified, span_map):
     return text, text_modified
 
 def process(text, modifiers):
-    text = str(text)
+    processed_text = str(text)
     replacement_span_map = []
 
     for i in range(len(modifiers)):
         pattern, replacement_map = modifiers[i]
 
         if(__verbose__):
-            print ('in:', text, i)
+            print ('in:', processed_text, i)
 
-        text = re.sub(
+        processed_text = re.sub(
             pattern = pattern, 
             repl = lambda match: repl(match, replacement_map, i, replacement_span_map), 
-            string = text
+            string = processed_text
         )
 
         if(__verbose__):
-            print ( [(a, b) for a,b,_,_ in replacement_span_map] )
-            print ('out:', text, i)
+            span_map = [(a, b) for a,b,_,_ in replacement_span_map]
+            decorate(text, processed_text, span_map)
+            print ( span_map )
+            print ('out:', processed_text, i)
 
         if __extended__:
             pass
 
-    return text, [(a, b) for a,b,_,_ in replacement_span_map]
+    return processed_text, [(a, b) for a,b,_,_ in replacement_span_map]

@@ -177,8 +177,9 @@ class BasicTest(TestCase):
 
         text_decorated, text_processed_decorated = core.decorate(text, text_processed, span_map)
 
-        self.assertEqual( text_decorated, ' 000 111 222 DDD ' )
         self.assertEqual( text_processed_decorated, ' 0000000 1111111 222222 DDD ' )
+        self.assertEqual( text_decorated, ' 000 111 222 DDD ' )
 
 if __name__ == '__main__':
-    main()
+    bt = BasicTest()
+    bt.test_chain_2()
