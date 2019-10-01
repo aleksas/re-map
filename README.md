@@ -4,11 +4,15 @@
 # re-map
 Apply multiple regex patterns and keep change index map.
 
-# Current state
+## Current state
 
 This is still work in progress.
 
 Not all replacements are mapped crrectly.
 
-# Goal 
+## Goal
 ...
+
+## Idea
+*   Same re pattern doesn't alter text so the indeces are not gloabally changed
+*   Different re patterns alter
