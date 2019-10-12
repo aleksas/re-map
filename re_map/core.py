@@ -96,7 +96,7 @@ def insert(entry, replacement_span_map):
         if source_span[0] >= entry[0][1]:
             break
         if intersect(source_span, entry[0]):
-            intersecting.append(i)
+            intersecting.append(j)
 
     if len(intersecting):
         entry_source_length = span_length(entry[0])
