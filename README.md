@@ -2,17 +2,15 @@
 [![PyPI](https://img.shields.io/pypi/v/re-map?color=success)](https://pypi.org/project/re-map/)
 
 # re-map
-Apply multiple regex patterns and keep change index map.
 
-## Current state
+Package for managing multiple regext pattern replacement change location map.
 
-This is still work in progress.
 
-Not all replacements are mapped crrectly.
+May be usefull when there is a necesity to have original text, text altered using regex pattern replacements and a map of said replacements.
+One scenario where this may proove usefull is machine learning "text2text# problems (e.g. translation, normalization).
 
-## Goal
-...
+# install
 
-## Idea
-*   Same re pattern doesn't alter text so the indeces are not gloabally changed
-*   Different re patterns alter
+```bash
+$ pip install re-map
+```
