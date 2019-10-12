@@ -4,7 +4,7 @@ path.append('..')
 from unittest import TestCase, main
 from re_map import process, utils
 
-class MultipleModifierTestCase(TestCase):
+class BundledModifierTestCase(TestCase):
     def test_a(self):
         text = 'ABAB'
         modifiers = [
@@ -54,6 +54,4 @@ class MultipleModifierTestCase(TestCase):
         self.assertEqual( text_processed_decorated, '001223' )
 
 if __name__ == '__main__':
-    tc = MultipleModifierTestCase()
-    tc.test_b()
     main()
