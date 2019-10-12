@@ -7,6 +7,9 @@ from re_map import process, core, utils
 core.__verbose__ = True
 
 class ChainModifierTestCase(TestCase):
+    ''' 
+    Tests perfect matching match group replacements.
+    '''
     def test_chain_1(self):
         text = ' BBB AAA AAA BBB '
 

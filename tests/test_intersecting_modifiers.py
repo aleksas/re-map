@@ -7,7 +7,7 @@ from re_map import process, core, utils
 core.__verbose__ = True
 
 class IntersectingModifierTestCase(TestCase):
-    def test_chain_1(self):
+    def test_intersection_1(self):
         text = 'C AAA C'
 
         modifiers = [
@@ -25,7 +25,7 @@ class IntersectingModifierTestCase(TestCase):
         self.assertEqual( text_decorated, '0000000' )
         self.assertEqual( text_processed_decorated, '00' )
 
-    def test_chain_2(self):
+    def test_intersection_2(self):
         text = 'C AAA C'
 
         modifiers = [
@@ -43,7 +43,7 @@ class IntersectingModifierTestCase(TestCase):
         self.assertEqual( text_decorated, '00000 C' )
         self.assertEqual( text_processed_decorated, '00 C' )
 
-    def test_chain_3(self):
+    def test_intersection_3(self):
         text = 'C AAA C'
 
         modifiers = [
@@ -61,7 +61,7 @@ class IntersectingModifierTestCase(TestCase):
         self.assertEqual( text_decorated, 'C 00000' )
         self.assertEqual( text_processed_decorated, 'C 00' )
 
-    def test_chain_4(self):
+    def test_intersection_4(self):
         text = 'C AAA C'
 
         modifiers = [
@@ -79,7 +79,7 @@ class IntersectingModifierTestCase(TestCase):
         self.assertEqual( text_decorated, 'C 000 C' )
         self.assertEqual( text_processed_decorated, 'C 00 C' )
 
-    def test_chain_5(self):
+    def test_intersection_5(self):
         text = ' C AAA C '
 
         modifiers = [
