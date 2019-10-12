@@ -7,7 +7,7 @@ Package for managing multiple regext pattern replacement change location map.
 
 
 May be usefull when there is a necesity to have original text, text altered using regex pattern replacements and a map of said replacements.
-One scenario where this may proove usefull is machine learning "text2text# problems (e.g. translation, normalization).
+One scenario where this may proove usefull is machine learning "text2text# problems (e.g. translation, text normalization, etc.).
 
 # install
 
