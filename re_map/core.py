@@ -104,7 +104,7 @@ def insert(entry, replacement_span_map):
         source_length, target_length = 0, 0
         source_span_start, target_span_start = entry[0][0], entry[1][0]
 
-        merge_entries = [replacement_span_map[i] for i in intersecting]
+        merge_entries = [replacement_span_map[k] for k in intersecting]
 
         for e in merge_entries:
             entry_source_length -= span_length(intersect(e[0], entry[0]))
