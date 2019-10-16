@@ -1,4 +1,5 @@
 import re
+from math import ceil, floor
 from .utils import decorate
 
 __verbose__ = False
@@ -7,15 +8,30 @@ __extended__ = False
 def span_len_delta(span_1, span_2):
     return (span_1[1] - span_1[0]) - (span_2[1] - span_2[0])
 
+def span_rtrim(span, value):
+    if span[0] < value:
+        return min(span[0], value), min(span[1], value)
+
 def span_offset(span, replacement_span_map):
     delta_start, delta_end = 0, 0
-    for a in replacement_span_map:
-        span_source, span_target, _ = a
-        if span_target[1] <= span[1]:
-            d = span_len_delta(span_target, span_source)
+    for span_source, span_target, _ in replacement_span_map:
+        d = span_len_delta(span_target, span_source)
+        if span_target[1] <= span[0]:
             delta_end += d
-            if span_target[1] <= span[0]:
-                delta_start += d
+            delta_start += d
+        else:
+            target_trimmed_start = span_rtrim(span_target, span[0])
+            target_trimmed_end = span_rtrim(span_target, span[1])
+
+            if target_trimmed_end:
+                # int() and 1.0 multipliers for 2.7 compatibility
+                ratio_end = 1.0 * span_length(target_trimmed_end) / span_length(span_target)
+                delta_end += int(floor(d * ratio_end))
+                if target_trimmed_start:
+                    ratio_start = 1.0 * span_length(target_trimmed_start) / span_length(span_target)
+                    delta_start += int(ceil(d * ratio_start))
+            else:
+                break
 
     return delta_start, delta_end
 
@@ -65,19 +81,6 @@ def sum_entry_deltas(entries):
     for entry in entries:
         res += span_len_delta(entry[1], entry[0])
 
-# span_arr_length ( merge_overlapping_spans(source) ) -
-# get diff from merged source spans
-# add up all diff to entry_len_delta sum
-# merge old entries with intersecting new_entry and delete old entries
-# and propagate len change as before
-# merge target spans into one starting at the least start value and ending at start + sums
-
-# 1. get new entry source and target span lengths
-# 2. subtract intersection lenghts between entry and merge entries
-# 3. get source and target starting point from merge entries + [entry]
-# 4. add source and target entry lenghts + subtracted lenghts to the start points to get end points
-# 5. delete merge entries
-
 def insert(entry, replacement_span_map):
     def validate(source_span, ref_source_span):
         if intersect(ref_source_span, source_span):
@@ -86,14 +89,19 @@ def insert(entry, replacement_span_map):
     intersecting = []
 
     i = 0
-    for i, (source_span, _, _) in enumerate(replacement_span_map):
-        if source_span[0] >= entry[0][1] or source_span[0] >= entry[0][0]:
+    for i, (source_span, target_span, _) in enumerate(replacement_span_map):
+        if (
+            (source_span[0] >= entry[0][1] or source_span[0] >= entry[0][0]) or
+            (target_span[0] >= entry[1][1] or target_span[0] >= entry[1][0]) or
+            (intersect(source_span, entry[0])) or
+            (intersect(target_span, entry[1]))
+            ):
             break
         i+=1
 
     for j in range(i, len(replacement_span_map)):
-        source_span, _, _ = replacement_span_map[j]
-        if source_span[0] >= entry[0][1]:
+        source_span, target_span, _ = replacement_span_map[j]
+        if source_span[0] >= entry[0][1] and target_span[0] >= entry[1][1]:
             break
         if intersect(source_span, entry[0]):
             intersecting.append(j)
@@ -106,10 +114,12 @@ def insert(entry, replacement_span_map):
 
         merge_entries = [replacement_span_map[k] for k in intersecting]
 
+        aligned_entry_target_span = (entry[1][0], entry[1][1] - entry[2])
         for e in merge_entries:
-            entry_source_length -= span_length(intersect(e[0], entry[0]))
-            aligned_entry_target_span = (entry[1][0], entry[1][1] - entry[2])
-            entry_target_length -= span_length(intersect(e[1], aligned_entry_target_span))
+            source_intersection = intersect(e[0], entry[0])
+            entry_source_length -= span_length(source_intersection) if source_intersection else 0
+            target_intersection = intersect(e[1], aligned_entry_target_span)
+            entry_target_length -= span_length(target_intersection) if target_intersection else 0
             source_length += span_length(e[0])
             target_length += span_length(e[1])
             source_span_start = min(source_span_start, e[0][0])
@@ -141,6 +151,8 @@ def clean_replacement_span_map(replacement_span_map):
 def repl(match, replacement_map, replacement_span_map):
     match_string = match.group()
     match_start = match.span(0)[0]
+    if len(match.regs) == 1:
+        raise Exception('No match groups in regex pattern.')
     delta = span_offset(match.span(1), replacement_span_map)
 
     current_match_delta = 0
@@ -179,26 +191,32 @@ def update_span_map(replacement_span_map, tmp_replacement_span_map):
 def process(text, modifiers):
     processed_text = str(text)
     replacement_span_map = []
+    if(__verbose__):
+        print ('text:', text)
 
     for i, (pattern, replacement_map) in enumerate(modifiers):
         tmp_replacement_span_map = []
 
         if(__verbose__):
-            print ('in:', processed_text, i)
+            print (i, 'pattern:', pattern)
+            print (i, 'replacement_map:', replacement_map)
+            print (i, 'in:', processed_text)
 
         processed_text = re.sub(
             pattern = pattern,
             repl = lambda match: repl(match, replacement_map, tmp_replacement_span_map),
             string = processed_text
         )
-
         normalize_source_spans(replacement_span_map, tmp_replacement_span_map)
+        if(__verbose__):
+            print (i, replacement_span_map )
+            print (i, tmp_replacement_span_map)
         update_span_map(replacement_span_map, tmp_replacement_span_map)
 
         if(__verbose__):
             decorate(text, processed_text, replacement_span_map)
-            print ( replacement_span_map )
-            print ('out:', processed_text, i)
+            print (i, replacement_span_map )
+            print (i, 'out:', processed_text)
 
         if __extended__:
             pass

@@ -7,6 +7,8 @@ from re_map import process, core, utils
 core.__verbose__ = True
 
 class ChainModifierTestCase(TestCase):
+    def runTest(self):
+        self.test_chain_1()
     ''' 
     Tests perfect matching match group replacements.
     '''
@@ -25,15 +27,15 @@ class ChainModifierTestCase(TestCase):
             ((13, 16), (13, 16))
         ]
 
-        text_processed, span_map = process(text, modifiers)
+        processed_text, span_map = process(text, modifiers)
 
-        self.assertEqual( text_processed, ' YYY YYY YYY YYY ' )
+        self.assertEqual( processed_text, ' YYY YYY YYY YYY ' )
         self.assertEqual( span_map, ref_span_map )
 
-        text_decorated, text_processed_decorated = utils.decorate(text, text_processed, span_map)
+        text_decorated, decorated_processed_text = utils.decorate(text, processed_text, span_map)
 
         self.assertEqual( text_decorated, ' 000 111 222 333 ' )
-        self.assertEqual( text_processed_decorated, ' 000 111 222 333 ' )
+        self.assertEqual( decorated_processed_text, ' 000 111 222 333 ' )
 
     def test_chain_2(self):
         text = ' AAA BBB CCC DDD '
@@ -50,14 +52,14 @@ class ChainModifierTestCase(TestCase):
             ((9, 12), (17, 23))
         ]
 
-        text_processed, span_map = process(text, modifiers)
+        processed_text, span_map = process(text, modifiers)
 
-        self.assertEqual( text_processed, ' QQQQQQQ QQQQQQQ XXXXXX DDD ' )
+        self.assertEqual( processed_text, ' QQQQQQQ QQQQQQQ XXXXXX DDD ' )
         self.assertEqual( span_map, ref_span_map )
 
-        text_decorated, text_processed_decorated = utils.decorate(text, text_processed, span_map)
+        text_decorated, decorated_processed_text = utils.decorate(text, processed_text, span_map)
 
-        self.assertEqual( text_processed_decorated, ' 0000000 1111111 222222 DDD ' )
+        self.assertEqual( decorated_processed_text, ' 0000000 1111111 222222 DDD ' )
         self.assertEqual( text_decorated, ' 000 111 222 DDD ' )
 
     def test_chain_3(self):
@@ -68,15 +70,15 @@ class ChainModifierTestCase(TestCase):
             ( r'(BB)',  { 1: 'DD' } )
         ]
 
-        text_processed, span_map = process(text, modifiers)
+        processed_text, span_map = process(text, modifiers)
 
-        self.assertEqual( text_processed, 'DDZDD' )
+        self.assertEqual( processed_text, 'DDZDD' )
         self.assertEqual( span_map, [ ((0, 1), (0, 2)), ((2, 3), (3, 5)) ] )
 
-        text_decorated, text_processed_decorated = utils.decorate(text, text_processed, span_map)
+        text_decorated, decorated_processed_text = utils.decorate(text, processed_text, span_map)
 
         self.assertEqual( text_decorated, '0Z1' )
-        self.assertEqual( text_processed_decorated, '00Z11' )
+        self.assertEqual( decorated_processed_text, '00Z11' )
 
     def test_chain_4(self):
         text = ' AAA '
@@ -86,15 +88,15 @@ class ChainModifierTestCase(TestCase):
             ( r'(BBBBB)',  { 1: 'CC' } ),
         ]
 
-        text_processed, span_map = process(text, modifiers)
+        processed_text, span_map = process(text, modifiers)
 
-        self.assertEqual( text_processed, ' CC ' )
+        self.assertEqual( processed_text, ' CC ' )
         self.assertEqual( span_map, [ ((1, 4), (1, 3)) ] )
 
-        text_decorated, text_processed_decorated = utils.decorate(text, text_processed, span_map)
+        text_decorated, decorated_processed_text = utils.decorate(text, processed_text, span_map)
 
         self.assertEqual( text_decorated, ' 000 ' )
-        self.assertEqual( text_processed_decorated, ' 00 ' )
+        self.assertEqual( decorated_processed_text, ' 00 ' )
 
     def test_chain_5(self):
         text = ' AAA D '
@@ -105,15 +107,15 @@ class ChainModifierTestCase(TestCase):
             ( r'(EE)',  { 1: 'FFFF' } ),
         ]
 
-        text_processed, span_map = process(text, modifiers)
+        processed_text, span_map = process(text, modifiers)
 
-        self.assertEqual( text_processed, ' CC FFFF ' )
+        self.assertEqual( processed_text, ' CC FFFF ' )
         self.assertEqual( span_map, [ ((1, 4), (1, 3)), ((5, 6), (4, 8)) ] )
 
-        text_decorated, text_processed_decorated = utils.decorate(text, text_processed, span_map)
+        text_decorated, decorated_processed_text = utils.decorate(text, processed_text, span_map)
 
         self.assertEqual( text_decorated, ' 000 1 ' )
-        self.assertEqual( text_processed_decorated, ' 00 1111 ' )
+        self.assertEqual( decorated_processed_text, ' 00 1111 ' )
 
 
     def test_chain_6(self):
@@ -125,16 +127,19 @@ class ChainModifierTestCase(TestCase):
             ( r'(EE)',  { 1: 'FFFF' } ),
         ]
 
-        text_processed, span_map = process(text, modifiers)
+        processed_text, span_map = process(text, modifiers)
 
-        self.assertEqual( text_processed, ' CC FFFF CC FFFF ' )
+        self.assertEqual( processed_text, ' CC FFFF CC FFFF ' )
         self.assertEqual( span_map, [ ((1, 4), (1, 3)), ((5, 6), (4, 8)), ((7, 10), (9, 11)), ((11, 12), (12, 16)) ] )
 
-        text_decorated, text_processed_decorated = utils.decorate(text, text_processed, span_map)
+        text_decorated, decorated_processed_text = utils.decorate(text, processed_text, span_map)
 
         self.assertEqual( text_decorated, ' 000 1 222 3 ' )
-        self.assertEqual( text_processed_decorated, ' 00 1111 22 3333 ' )
+        self.assertEqual( decorated_processed_text, ' 00 1111 22 3333 ' )
 
 
 if __name__ == '__main__':
-    main()
+    tc = ChainModifierTestCase()
+    tc.test_chain_2()
+    #tc.test_chain_6()
+    #main()

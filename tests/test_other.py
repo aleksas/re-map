@@ -60,83 +60,83 @@ class OtherTestCase(TestCase):
 
     def test_0(self):
         text = str(self.text_0)
-        text_processed, span_map = process(text, self.modifiers_0)
-        self.assertEqual( text_processed, ' ZZZ YYY XXX WWW ' )
+        processed_text, span_map = process(text, self.modifiers_0)
+        self.assertEqual( processed_text, ' ZZZ YYY XXX WWW ' )
         self.assertEqual( span_map, self.span_map )
 
-        text_decorated, text_processed_decorated = utils.decorate(text, text_processed, span_map)
+        text_decorated, decorated_processed_text = utils.decorate(text, processed_text, span_map)
 
         self.assertEqual( text_decorated, ' 000 111 222 333 ' )
-        self.assertEqual( text_processed_decorated, ' 000 111 222 333 ' )
+        self.assertEqual( decorated_processed_text, ' 000 111 222 333 ' )
 
     def test_1(self):
         text = str(self.text_1)
-        text_processed, span_map = process(text, self.modifiers_0)
-        self.assertEqual( text_processed, ' ZZZ YYY ZZZ YYY ' )
+        processed_text, span_map = process(text, self.modifiers_0)
+        self.assertEqual( processed_text, ' ZZZ YYY ZZZ YYY ' )
         self.assertEqual( span_map, self.span_map )
 
-        text_decorated, text_processed_decorated = utils.decorate(text, text_processed, span_map)
+        text_decorated, decorated_processed_text = utils.decorate(text, processed_text, span_map)
 
         self.assertEqual( text_decorated, ' 000 111 222 333 ' )
-        self.assertEqual( text_processed_decorated, ' 000 111 222 333 ' )
+        self.assertEqual( decorated_processed_text, ' 000 111 222 333 ' )
 
     def test_2a(self):
         text = str(self.text_1)
-        text_processed, span_map = process(text, self.modifiers_1)
+        processed_text, span_map = process(text, self.modifiers_1)
 
-        self.assertEqual( text_processed, ' BBB BBB BBB BBB ' )
+        self.assertEqual( processed_text, ' BBB BBB BBB BBB ' )
         self.assertEqual( span_map, self.span_map_1_1 )
 
-        text_decorated, text_processed_decorated = utils.decorate(text, text_processed, span_map)
+        text_decorated, decorated_processed_text = utils.decorate(text, processed_text, span_map)
 
         self.assertEqual( text_decorated, ' 000 BBB 111 BBB ' )
-        self.assertEqual( text_processed_decorated, ' 000 BBB 111 BBB ' )
+        self.assertEqual( decorated_processed_text, ' 000 BBB 111 BBB ' )
 
     def test_2b(self):
         text = str(self.text_3)
-        text_processed, span_map = process(text, self.modifiers_1)
+        processed_text, span_map = process(text, self.modifiers_1)
 
-        self.assertEqual( text_processed, ' BBB BBB BBB BBB ' )
+        self.assertEqual( processed_text, ' BBB BBB BBB BBB ' )
         self.assertEqual( span_map, self.span_map )
 
-        text_decorated, text_processed_decorated = utils.decorate(text, text_processed, span_map)
+        text_decorated, decorated_processed_text = utils.decorate(text, processed_text, span_map)
 
         self.assertEqual( text_decorated, ' 000 111 222 333 ' )
-        self.assertEqual( text_processed_decorated, ' 000 111 222 333 ' )
+        self.assertEqual( decorated_processed_text, ' 000 111 222 333 ' )
 
     def test_3(self):
         text = str(self.text_2)
-        text_processed, span_map = process(text, self.modifiers_0)
-        self.assertEqual( text_processed, ' YYY ZZZ ZZZ YYY ' )
+        processed_text, span_map = process(text, self.modifiers_0)
+        self.assertEqual( processed_text, ' YYY ZZZ ZZZ YYY ' )
         self.assertEqual( span_map, self.span_map )
 
-        text_decorated, text_processed_decorated = utils.decorate(text, text_processed, span_map)
+        text_decorated, decorated_processed_text = utils.decorate(text, processed_text, span_map)
 
         self.assertEqual( text_decorated, ' 000 111 222 333 ' )
-        self.assertEqual( text_processed_decorated, ' 000 111 222 333 ' )
+        self.assertEqual( decorated_processed_text, ' 000 111 222 333 ' )
 
     def test_4(self):
         text = str(self.text_0)
-        text_processed, span_map = process(text, self.modifiers_3)
-        self.assertEqual( text_processed, ' CCC CCC CCC CCC ' )
+        processed_text, span_map = process(text, self.modifiers_3)
+        self.assertEqual( processed_text, ' CCC CCC CCC CCC ' )
         self.assertEqual( span_map, self.span_map_2 )
 
-        text_decorated, text_processed_decorated = utils.decorate(text, text_processed, span_map)
+        text_decorated, decorated_processed_text = utils.decorate(text, processed_text, span_map)
 
         self.assertEqual( text_decorated, ' 000 111 CCC 222 ' )
-        self.assertEqual( text_processed_decorated, ' 000 111 CCC 222 ' )
+        self.assertEqual( decorated_processed_text, ' 000 111 CCC 222 ' )
 
     def test_5(self):
         text = str(self.text_0)
-        text_processed, span_map = process(text, self.modifiers_4)
+        processed_text, span_map = process(text, self.modifiers_4)
 
-        self.assertEqual( text_processed, ' CCCC CCCC CCCC CCCC ' )
+        self.assertEqual( processed_text, ' CCCC CCCC CCCC CCCC ' )
         self.assertEqual( span_map, self.span_map_3 )
 
-        text_decorated, text_processed_decorated = utils.decorate(text, text_processed, span_map)
+        text_decorated, decorated_processed_text = utils.decorate(text, processed_text, span_map)
 
         self.assertEqual( text_decorated, ' 000 111 222 333 ' )
-        self.assertEqual( text_processed_decorated, ' 0000 1111 2222 3333 ' )
+        self.assertEqual( decorated_processed_text, ' 0000 1111 2222 3333 ' )
 
 if __name__ == '__main__':
     main()
