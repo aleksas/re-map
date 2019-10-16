@@ -135,9 +135,5 @@ class MatchingGroupTestCase(TestCase):
         self.assertEqual( decorated_text, ' 000 1 222 3 ' )
         self.assertEqual( decorated_processed_text, ' 00 1111 22 3333 ' )
 
-
 if __name__ == '__main__':
-    tc = ChainModifierTestCase()
-    tc.test_matching_2()
-    #tc.test_matching_6()
-    #main()
+    main()

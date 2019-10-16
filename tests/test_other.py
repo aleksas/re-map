@@ -80,7 +80,7 @@ class OtherTestCase(TestCase):
         self.assertEqual( decorated_text, ' 000 111 222 333 ' )
         self.assertEqual( decorated_processed_text, ' 000 111 222 333 ' )
 
-    def test_2a(self):
+    def test_2(self):
         text = str(self.text_1)
         processed_text, span_map = process(text, self.modifiers_1)
 
@@ -92,7 +92,7 @@ class OtherTestCase(TestCase):
         self.assertEqual( decorated_text, ' 000 BBB 111 BBB ' )
         self.assertEqual( decorated_processed_text, ' 000 BBB 111 BBB ' )
 
-    def test_2b(self):
+    def test_3(self):
         text = str(self.text_3)
         processed_text, span_map = process(text, self.modifiers_1)
 
@@ -104,7 +104,7 @@ class OtherTestCase(TestCase):
         self.assertEqual( decorated_text, ' 000 111 222 333 ' )
         self.assertEqual( decorated_processed_text, ' 000 111 222 333 ' )
 
-    def test_3(self):
+    def test_4(self):
         text = str(self.text_2)
         processed_text, span_map = process(text, self.modifiers_0)
         self.assertEqual( processed_text, ' YYY ZZZ ZZZ YYY ' )
@@ -115,7 +115,7 @@ class OtherTestCase(TestCase):
         self.assertEqual( decorated_text, ' 000 111 222 333 ' )
         self.assertEqual( decorated_processed_text, ' 000 111 222 333 ' )
 
-    def test_4(self):
+    def test_5(self):
         text = str(self.text_0)
         processed_text, span_map = process(text, self.modifiers_3)
         self.assertEqual( processed_text, ' CCC CCC CCC CCC ' )
@@ -126,7 +126,7 @@ class OtherTestCase(TestCase):
         self.assertEqual( decorated_text, ' 000 111 CCC 222 ' )
         self.assertEqual( decorated_processed_text, ' 000 111 CCC 222 ' )
 
-    def test_5(self):
+    def test_6(self):
         text = str(self.text_0)
         processed_text, span_map = process(text, self.modifiers_4)
 
@@ -137,6 +137,15 @@ class OtherTestCase(TestCase):
 
         self.assertEqual( decorated_text, ' 000 111 222 333 ' )
         self.assertEqual( decorated_processed_text, ' 0000 1111 2222 3333 ' )
+
+    def test_7(self):
+        text = 'ab'
+        modifiers = [
+            ( r'((a)(b))',  { 1: 'c', 2:'d', 3:'e'} ),
+        ]
+
+        with self.assertRaises(ValueError):
+            process(text, modifiers)
 
 if __name__ == '__main__':
     main()
