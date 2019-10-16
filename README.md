@@ -16,7 +16,7 @@ $ pip install re-map
 ```
 
 # example
-
+## Code
 ```python
 from re_map import process, utils
 
@@ -44,7 +44,9 @@ print (decorated_processed_text)
 print (span_map)
 ```
 
-```bash
+## Output
+
+```shell
 Alexander G. Bell ate 10 apples & 8 cucumbers. The 1st apple was rotten, the 2nd was too, also the third, fourth etc.
 Alexander 00 Bell ate 11 apples 2 3 cucumbers. The 455 apple was rotten, the 677 was too, also the third, fourth 888.
 Alexander Graham Bell ate ten apples and eight cucumbers. The first apple was rotten, the second was too, also the third, fourth et cetera.

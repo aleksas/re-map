@@ -64,9 +64,9 @@ class OtherTestCase(TestCase):
         self.assertEqual( processed_text, ' ZZZ YYY XXX WWW ' )
         self.assertEqual( span_map, self.span_map )
 
-        text_decorated, decorated_processed_text = utils.decorate(text, processed_text, span_map)
+        decorated_text, decorated_processed_text = utils.decorate(text, processed_text, span_map)
 
-        self.assertEqual( text_decorated, ' 000 111 222 333 ' )
+        self.assertEqual( decorated_text, ' 000 111 222 333 ' )
         self.assertEqual( decorated_processed_text, ' 000 111 222 333 ' )
 
     def test_1(self):
@@ -75,9 +75,9 @@ class OtherTestCase(TestCase):
         self.assertEqual( processed_text, ' ZZZ YYY ZZZ YYY ' )
         self.assertEqual( span_map, self.span_map )
 
-        text_decorated, decorated_processed_text = utils.decorate(text, processed_text, span_map)
+        decorated_text, decorated_processed_text = utils.decorate(text, processed_text, span_map)
 
-        self.assertEqual( text_decorated, ' 000 111 222 333 ' )
+        self.assertEqual( decorated_text, ' 000 111 222 333 ' )
         self.assertEqual( decorated_processed_text, ' 000 111 222 333 ' )
 
     def test_2a(self):
@@ -87,9 +87,9 @@ class OtherTestCase(TestCase):
         self.assertEqual( processed_text, ' BBB BBB BBB BBB ' )
         self.assertEqual( span_map, self.span_map_1_1 )
 
-        text_decorated, decorated_processed_text = utils.decorate(text, processed_text, span_map)
+        decorated_text, decorated_processed_text = utils.decorate(text, processed_text, span_map)
 
-        self.assertEqual( text_decorated, ' 000 BBB 111 BBB ' )
+        self.assertEqual( decorated_text, ' 000 BBB 111 BBB ' )
         self.assertEqual( decorated_processed_text, ' 000 BBB 111 BBB ' )
 
     def test_2b(self):
@@ -99,9 +99,9 @@ class OtherTestCase(TestCase):
         self.assertEqual( processed_text, ' BBB BBB BBB BBB ' )
         self.assertEqual( span_map, self.span_map )
 
-        text_decorated, decorated_processed_text = utils.decorate(text, processed_text, span_map)
+        decorated_text, decorated_processed_text = utils.decorate(text, processed_text, span_map)
 
-        self.assertEqual( text_decorated, ' 000 111 222 333 ' )
+        self.assertEqual( decorated_text, ' 000 111 222 333 ' )
         self.assertEqual( decorated_processed_text, ' 000 111 222 333 ' )
 
     def test_3(self):
@@ -110,9 +110,9 @@ class OtherTestCase(TestCase):
         self.assertEqual( processed_text, ' YYY ZZZ ZZZ YYY ' )
         self.assertEqual( span_map, self.span_map )
 
-        text_decorated, decorated_processed_text = utils.decorate(text, processed_text, span_map)
+        decorated_text, decorated_processed_text = utils.decorate(text, processed_text, span_map)
 
-        self.assertEqual( text_decorated, ' 000 111 222 333 ' )
+        self.assertEqual( decorated_text, ' 000 111 222 333 ' )
         self.assertEqual( decorated_processed_text, ' 000 111 222 333 ' )
 
     def test_4(self):
@@ -121,9 +121,9 @@ class OtherTestCase(TestCase):
         self.assertEqual( processed_text, ' CCC CCC CCC CCC ' )
         self.assertEqual( span_map, self.span_map_2 )
 
-        text_decorated, decorated_processed_text = utils.decorate(text, processed_text, span_map)
+        decorated_text, decorated_processed_text = utils.decorate(text, processed_text, span_map)
 
-        self.assertEqual( text_decorated, ' 000 111 CCC 222 ' )
+        self.assertEqual( decorated_text, ' 000 111 CCC 222 ' )
         self.assertEqual( decorated_processed_text, ' 000 111 CCC 222 ' )
 
     def test_5(self):
@@ -133,9 +133,9 @@ class OtherTestCase(TestCase):
         self.assertEqual( processed_text, ' CCCC CCCC CCCC CCCC ' )
         self.assertEqual( span_map, self.span_map_3 )
 
-        text_decorated, decorated_processed_text = utils.decorate(text, processed_text, span_map)
+        decorated_text, decorated_processed_text = utils.decorate(text, processed_text, span_map)
 
-        self.assertEqual( text_decorated, ' 000 111 222 333 ' )
+        self.assertEqual( decorated_text, ' 000 111 222 333 ' )
         self.assertEqual( decorated_processed_text, ' 0000 1111 2222 3333 ' )
 
 if __name__ == '__main__':

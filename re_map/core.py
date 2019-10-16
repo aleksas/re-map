@@ -3,7 +3,6 @@ from math import ceil, floor
 from .utils import decorate
 
 __verbose__ = False
-__extended__ = False
 
 def span_len_delta(span_1, span_2):
     return (span_1[1] - span_1[0]) - (span_2[1] - span_2[0])
@@ -217,9 +216,6 @@ def process(text, modifiers):
             decorate(text, processed_text, replacement_span_map)
             print (i, replacement_span_map )
             print (i, 'out:', processed_text)
-
-        if __extended__:
-            pass
 
     clean_replacement_span_map(replacement_span_map)
 

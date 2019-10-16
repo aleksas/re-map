@@ -5,7 +5,7 @@ from unittest import TestCase, main
 from re_map import process, utils
 
 class SingleModifierTestCase(TestCase):
-    def test_a(self):
+    def test_single_1(self):
         text = 'ABAB'
         modifiers = [ ( r'(A)(B)',  { 1: 'CC', 2:'D'} ) ]
 
@@ -18,7 +18,7 @@ class SingleModifierTestCase(TestCase):
         self.assertEqual( decorated_text, '0123' )
         self.assertEqual( decorated_processed_text, '001223' )
 
-    def test_b(self):
+    def test_single_2(self):
         text = 'AABAAB'
         modifiers = [ ( r'(AA)(B)',  { 1: 'C', 2:'D'} ) ]
 
@@ -31,7 +31,7 @@ class SingleModifierTestCase(TestCase):
         self.assertEqual( decorated_text, '001223' )
         self.assertEqual( decorated_processed_text, '0123' )
 
-    def test_c(self):
+    def test_single_3(self):
         text = 'ABBABB'
         modifiers = [ ( r'(A)(BB)',  { 1: 'CC', 2:'D'} ) ]
 

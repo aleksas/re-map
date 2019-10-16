@@ -4,8 +4,8 @@ path.append('..')
 from unittest import TestCase, main
 from re_map import process, utils
 
-class BundledModifierTestCase(TestCase):
-    def test_a(self):
+class BundledModifiersTestCase(TestCase):
+    def test_bundled_1(self):
         text = 'ABAB'
         modifiers = [
             ( r'(A)',  { 1: 'CC'} ),
@@ -21,7 +21,7 @@ class BundledModifierTestCase(TestCase):
         self.assertEqual( decorated_text, '0123' )
         self.assertEqual( decorated_processed_text, '001223' )
 
-    def test_b(self):
+    def test_bundled_2(self):
         text = 'AABAAB'
         modifiers = [
             ( r'(AA)',  { 1: 'C'} ),
@@ -37,7 +37,7 @@ class BundledModifierTestCase(TestCase):
         self.assertEqual( decorated_text, '001223' )
         self.assertEqual( decorated_processed_text, '0123' )
 
-    def test_c(self):
+    def test_bundled_3(self):
         text = 'ABBABB'
         modifiers = [
             ( r'(A)',  { 1: 'CC'} ),
@@ -53,7 +53,7 @@ class BundledModifierTestCase(TestCase):
         self.assertEqual( decorated_text, '011233' )
         self.assertEqual( decorated_processed_text, '001223' )
 
-    def test_empty(self):
+    def test_bundled_4(self):
         text = 'BAAB'
 
         modifiers = [

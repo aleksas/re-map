@@ -6,7 +6,7 @@ from re_map import process, core, utils
 
 core.__verbose__ = True
 
-class IntersectingModifierTestCase(TestCase):
+class IntersectingGroupTestCase(TestCase):
     def test_intersection_1(self):
         text = 'C AAA C'
 
@@ -20,9 +20,9 @@ class IntersectingModifierTestCase(TestCase):
         self.assertEqual( processed_text, 'DD' )
         self.assertEqual( span_map, [ ((0, 7), (0, 2)) ] )
 
-        text_decorated, decorated_processed_text = utils.decorate(text, processed_text, span_map)
+        decorated_text, decorated_processed_text = utils.decorate(text, processed_text, span_map)
 
-        self.assertEqual( text_decorated, '0000000' )
+        self.assertEqual( decorated_text, '0000000' )
         self.assertEqual( decorated_processed_text, '00' )
 
     def test_intersection_2(self):
@@ -38,9 +38,9 @@ class IntersectingModifierTestCase(TestCase):
         self.assertEqual( processed_text, 'DD C' )
         self.assertEqual( span_map, [ ((0, 5), (0, 2)) ] )
 
-        text_decorated, decorated_processed_text = utils.decorate(text, processed_text, span_map)
+        decorated_text, decorated_processed_text = utils.decorate(text, processed_text, span_map)
 
-        self.assertEqual( text_decorated, '00000 C' )
+        self.assertEqual( decorated_text, '00000 C' )
         self.assertEqual( decorated_processed_text, '00 C' )
 
     def test_intersection_3(self):
@@ -56,9 +56,9 @@ class IntersectingModifierTestCase(TestCase):
         self.assertEqual( processed_text, 'C DD' )
         self.assertEqual( span_map, [ ((2, 7), (2, 4)) ] )
 
-        text_decorated, decorated_processed_text = utils.decorate(text, processed_text, span_map)
+        decorated_text, decorated_processed_text = utils.decorate(text, processed_text, span_map)
 
-        self.assertEqual( text_decorated, 'C 00000' )
+        self.assertEqual( decorated_text, 'C 00000' )
         self.assertEqual( decorated_processed_text, 'C 00' )
 
     def test_intersection_4(self):
@@ -74,9 +74,9 @@ class IntersectingModifierTestCase(TestCase):
         self.assertEqual( processed_text, 'C DD C' )
         self.assertEqual( span_map, [ ((2, 5), (2, 4)) ] )
 
-        text_decorated, decorated_processed_text = utils.decorate(text, processed_text, span_map)
+        decorated_text, decorated_processed_text = utils.decorate(text, processed_text, span_map)
 
-        self.assertEqual( text_decorated, 'C 000 C' )
+        self.assertEqual( decorated_text, 'C 000 C' )
         self.assertEqual( decorated_processed_text, 'C 00 C' )
 
     def test_intersection_5(self):
@@ -93,9 +93,9 @@ class IntersectingModifierTestCase(TestCase):
         self.assertEqual( processed_text, ' FFD C ' )
         self.assertEqual( span_map, [ ((1, 6), (1, 4)) ] )
 
-        text_decorated, decorated_processed_text = utils.decorate(text, processed_text, span_map)
+        decorated_text, decorated_processed_text = utils.decorate(text, processed_text, span_map)
 
-        self.assertEqual( text_decorated, ' 00000 C ' )
+        self.assertEqual( decorated_text, ' 00000 C ' )
         self.assertEqual( decorated_processed_text, ' 000 C ' )
 
     def test_intersection_6(self):
@@ -110,9 +110,9 @@ class IntersectingModifierTestCase(TestCase):
         self.assertEqual( processed_text, ' CCC CCCB' )
         self.assertEqual( span_map, [((1, 5), (1, 9))] )
 
-        text_decorated, decorated_processed_text = utils.decorate(text, processed_text, span_map)
+        decorated_text, decorated_processed_text = utils.decorate(text, processed_text, span_map)
 
-        self.assertEqual( text_decorated, ' 0000' )
+        self.assertEqual( decorated_text, ' 0000' )
         self.assertEqual( decorated_processed_text, ' 00000000' )
 
 
@@ -128,9 +128,9 @@ class IntersectingModifierTestCase(TestCase):
         self.assertEqual( processed_text, 'BCCC CCC ' )
         self.assertEqual( span_map, [((0, 4), (0, 8))] )
 
-        text_decorated, decorated_processed_text = utils.decorate(text, processed_text, span_map)
+        decorated_text, decorated_processed_text = utils.decorate(text, processed_text, span_map)
 
-        self.assertEqual( text_decorated, '0000 ' )
+        self.assertEqual( decorated_text, '0000 ' )
         self.assertEqual( decorated_processed_text, '00000000 ' )
 
     def test_multiple_intersections_1(self):
@@ -147,9 +147,9 @@ class IntersectingModifierTestCase(TestCase):
         self.assertEqual( processed_text, 'FFG DD ' )
         self.assertEqual( span_map, [ ((0, 8), (0, 3)), ((9, 10), (4, 6)) ] )
 
-        text_decorated, decorated_processed_text = utils.decorate(text, processed_text, span_map)
+        decorated_text, decorated_processed_text = utils.decorate(text, processed_text, span_map)
 
-        self.assertEqual( text_decorated, '00000000 1 ' )
+        self.assertEqual( decorated_text, '00000000 1 ' )
         self.assertEqual( decorated_processed_text, '000 11 ' )
 
 
@@ -166,9 +166,9 @@ class IntersectingModifierTestCase(TestCase):
         self.assertEqual( processed_text, ' et cetera.' )
         self.assertEqual( span_map, [ ((1, 5), (1, 11)) ] )
 
-        text_decorated, decorated_processed_text = utils.decorate(text, processed_text, span_map)
+        decorated_text, decorated_processed_text = utils.decorate(text, processed_text, span_map)
 
-        self.assertEqual( text_decorated, ' 0000' )
+        self.assertEqual( decorated_text, ' 0000' )
         self.assertEqual( decorated_processed_text, ' 0000000000' )
 
 
