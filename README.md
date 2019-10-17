@@ -1,5 +1,6 @@
 [![Build Status](https://travis-ci.org/aleksas/re-map.svg?branch=master)](https://travis-ci.org/aleksas/re-map)
 [![PyPI](https://img.shields.io/pypi/v/re-map?color=success)](https://pypi.org/project/re-map/)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/63e1067e85994870b8f6a39a4ee34ec3)](https://www.codacy.com/manual/aleksas/re-map?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=aleksas/re-map&amp;utm_campaign=Badge_Grade)
 
 # re-map
 
