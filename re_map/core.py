@@ -11,6 +11,10 @@ def span_rtrim(span, value):
     if span[0] < value:
         return min(span[0], value), min(span[1], value)
 
+def swap_span_map(span_map):
+    for source, destination in span_map:
+        yield destination, source, span_len_delta(source, destination)
+
 def span_offset(span, replacement_span_map):
     delta_start, delta_end = 0, 0
     for span_source, span_target, _ in replacement_span_map:
@@ -189,9 +193,9 @@ def update_span_map(replacement_span_map, tmp_replacement_span_map):
     for entry in tmp_replacement_span_map:
         insert(entry, replacement_span_map)
 
-def process(text, modifiers):
+def process(text, modifiers, replacement_span_map=None):
     processed_text = str(text)
-    replacement_span_map = []
+    replacement_span_map = replacement_span_map if replacement_span_map else []
     if(__verbose__):
         print ('text:', text)
 

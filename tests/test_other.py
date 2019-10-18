@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from sys import path
 path.append('..')
 
@@ -146,6 +148,28 @@ class OtherTestCase(TestCase):
 
         with self.assertRaises(ValueError):
             process(text, modifiers)
+
+    def test_8(self):
+        text = 'AA BBBB& CC&CCCC'
+
+        modifiers_1 = [
+            ( r'([A-Za-z&]+)',  { 1: lambda x: x.replace('&', '') } ),
+        ]
+        modifiers_2 = [
+            ( r'(AA) ',  { 1: 'DDD DDD' } ),
+        ]
+
+        processed_text_1, span_map = process(text, modifiers_1)
+        swapped_span_map = list(core.swap_span_map(span_map))
+        processed_text, span_map = process(text, modifiers_2, swapped_span_map)
+
+        self.assertEqual( processed_text, r'DDD DDD BBBB& CC&CCCC' )
+        self.assertEqual( span_map, [((0, 2), (0, 7)), ((3, 7), (8, 13)), ((8, 14), (14, 21)) ] )
+
+        decorated_text, decorated_processed_text = utils.decorate(processed_text_1, processed_text, span_map)
+
+        self.assertEqual( decorated_text, '00 1111 222222' )
+        self.assertEqual( decorated_processed_text, '0000000 11111 2222222' )
 
 if __name__ == '__main__':
     main()
