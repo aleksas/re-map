@@ -2,9 +2,7 @@ from sys import path
 path.append('..')
 
 from unittest import TestCase, main
-from re_map import process, core, utils
-
-core.__verbose__ = True
+from re_map import Processor
 
 class MatchingGroupTestCase(TestCase):
     ''' 
@@ -25,12 +23,14 @@ class MatchingGroupTestCase(TestCase):
             ((13, 16), (13, 16))
         ]
 
-        processed_text, span_map = process(text, modifiers)
+        with Processor(text) as procesor:
+            for pattern, replacement_map in modifiers:
+                procesor.process(pattern, replacement_map)
+                
+        self.assertEqual( procesor.processed_text, ' YYY YYY YYY YYY ' )
+        self.assertEqual( procesor.span_map, ref_span_map )
 
-        self.assertEqual( processed_text, ' YYY YYY YYY YYY ' )
-        self.assertEqual( span_map, ref_span_map )
-
-        decorated_text, decorated_processed_text = utils.decorate(text, processed_text, span_map)
+        decorated_text, decorated_processed_text = procesor.decorate()
 
         self.assertEqual( decorated_text, ' 000 111 222 333 ' )
         self.assertEqual( decorated_processed_text, ' 000 111 222 333 ' )
@@ -50,12 +50,14 @@ class MatchingGroupTestCase(TestCase):
             ((9, 12), (17, 23))
         ]
 
-        processed_text, span_map = process(text, modifiers)
+        with Processor(text) as procesor:
+            for pattern, replacement_map in modifiers:
+                procesor.process(pattern, replacement_map)
+                
+        self.assertEqual( procesor.processed_text, ' QQQQQQQ QQQQQQQ XXXXXX DDD ' )
+        self.assertEqual( procesor.span_map, ref_span_map )
 
-        self.assertEqual( processed_text, ' QQQQQQQ QQQQQQQ XXXXXX DDD ' )
-        self.assertEqual( span_map, ref_span_map )
-
-        decorated_text, decorated_processed_text = utils.decorate(text, processed_text, span_map)
+        decorated_text, decorated_processed_text = procesor.decorate()
 
         self.assertEqual( decorated_processed_text, ' 0000000 1111111 222222 DDD ' )
         self.assertEqual( decorated_text, ' 000 111 222 DDD ' )
@@ -68,12 +70,14 @@ class MatchingGroupTestCase(TestCase):
             ( r'(BB)',  { 1: 'DD' } )
         ]
 
-        processed_text, span_map = process(text, modifiers)
+        with Processor(text) as procesor:
+            for pattern, replacement_map in modifiers:
+                procesor.process(pattern, replacement_map)
+                
+        self.assertEqual( procesor.processed_text, 'DDZDD' )
+        self.assertEqual( procesor.span_map, [ ((0, 1), (0, 2)), ((2, 3), (3, 5)) ] )
 
-        self.assertEqual( processed_text, 'DDZDD' )
-        self.assertEqual( span_map, [ ((0, 1), (0, 2)), ((2, 3), (3, 5)) ] )
-
-        decorated_text, decorated_processed_text = utils.decorate(text, processed_text, span_map)
+        decorated_text, decorated_processed_text = procesor.decorate()
 
         self.assertEqual( decorated_text, '0Z1' )
         self.assertEqual( decorated_processed_text, '00Z11' )
@@ -86,12 +90,14 @@ class MatchingGroupTestCase(TestCase):
             ( r'(BBBBB)',  { 1: 'CC' } ),
         ]
 
-        processed_text, span_map = process(text, modifiers)
+        with Processor(text) as procesor:
+            for pattern, replacement_map in modifiers:
+                procesor.process(pattern, replacement_map)
+                
+        self.assertEqual( procesor.processed_text, ' CC ' )
+        self.assertEqual( procesor.span_map, [ ((1, 4), (1, 3)) ] )
 
-        self.assertEqual( processed_text, ' CC ' )
-        self.assertEqual( span_map, [ ((1, 4), (1, 3)) ] )
-
-        decorated_text, decorated_processed_text = utils.decorate(text, processed_text, span_map)
+        decorated_text, decorated_processed_text = procesor.decorate()
 
         self.assertEqual( decorated_text, ' 000 ' )
         self.assertEqual( decorated_processed_text, ' 00 ' )
@@ -105,16 +111,17 @@ class MatchingGroupTestCase(TestCase):
             ( r'(EE)',  { 1: 'FFFF' } ),
         ]
 
-        processed_text, span_map = process(text, modifiers)
+        with Processor(text) as procesor:
+            for pattern, replacement_map in modifiers:
+                procesor.process(pattern, replacement_map)
+                
+        self.assertEqual( procesor.processed_text, ' CC FFFF ' )
+        self.assertEqual( procesor.span_map, [ ((1, 4), (1, 3)), ((5, 6), (4, 8)) ] )
 
-        self.assertEqual( processed_text, ' CC FFFF ' )
-        self.assertEqual( span_map, [ ((1, 4), (1, 3)), ((5, 6), (4, 8)) ] )
-
-        decorated_text, decorated_processed_text = utils.decorate(text, processed_text, span_map)
+        decorated_text, decorated_processed_text = procesor.decorate()
 
         self.assertEqual( decorated_text, ' 000 1 ' )
         self.assertEqual( decorated_processed_text, ' 00 1111 ' )
-
 
     def test_matching_6(self):
         text = ' AAA D AAA D '
@@ -125,12 +132,14 @@ class MatchingGroupTestCase(TestCase):
             ( r'(EE)',  { 1: 'FFFF' } ),
         ]
 
-        processed_text, span_map = process(text, modifiers)
+        with Processor(text) as procesor:
+            for pattern, replacement_map in modifiers:
+                procesor.process(pattern, replacement_map)
+                
+        self.assertEqual( procesor.processed_text, ' CC FFFF CC FFFF ' )
+        self.assertEqual( procesor.span_map, [ ((1, 4), (1, 3)), ((5, 6), (4, 8)), ((7, 10), (9, 11)), ((11, 12), (12, 16)) ] )
 
-        self.assertEqual( processed_text, ' CC FFFF CC FFFF ' )
-        self.assertEqual( span_map, [ ((1, 4), (1, 3)), ((5, 6), (4, 8)), ((7, 10), (9, 11)), ((11, 12), (12, 16)) ] )
-
-        decorated_text, decorated_processed_text = utils.decorate(text, processed_text, span_map)
+        decorated_text, decorated_processed_text = procesor.decorate()
 
         self.assertEqual( decorated_text, ' 000 1 222 3 ' )
         self.assertEqual( decorated_processed_text, ' 00 1111 22 3333 ' )

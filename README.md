@@ -18,7 +18,7 @@ $ pip install re-map
 # example
 ## Code
 ```python
-from re_map import process, utils
+from re_map import Processor
 
 numbers = {5: 'five', 8: 'eight', 10: 'ten'}
 orginal_numbers = {1: 'first', 2: 'second'}
@@ -33,13 +33,15 @@ modifiers = [
 
 text = 'Alexander G. Bell ate 10 apples & 8 cucumbers. The 1st apple was rotten, the 2nd was too, also the third, fourth etc.'
         
-processed_text, span_map = process(text, modifiers)
+with Processor(text) as procesor:
+    for pattern, replacement_map in modifiers:
+        procesor.process(pattern, replacement_map)
 
-decorated_text, decorated_processed_text = utils.decorate(text, processed_text, span_map)
+decorated_text, decorated_processed_text = procesor.decorate()
 
 print (text)
 print (decorated_text)
-print (processed_text)
+print (procesor.processed_text)
 print (decorated_processed_text)
 print (span_map)
 ```

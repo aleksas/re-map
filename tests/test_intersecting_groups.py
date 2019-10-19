@@ -2,9 +2,7 @@ from sys import path
 path.append('..')
 
 from unittest import TestCase, main
-from re_map import process, core, utils
-
-core.__verbose__ = True
+from re_map import Processor
 
 class IntersectingGroupTestCase(TestCase):
     def test_intersection_1(self):
@@ -15,12 +13,14 @@ class IntersectingGroupTestCase(TestCase):
             ( r'(C BBBBB C)',  { 1: 'DD' } ),
         ]
 
-        processed_text, span_map = process(text, modifiers)
+        with Processor(text) as procesor:
+            for pattern, replacement_map in modifiers:
+                procesor.process(pattern, replacement_map)
+                
+        self.assertEqual( procesor.processed_text, 'DD' )
+        self.assertEqual( procesor.span_map, [ ((0, 7), (0, 2)) ] )
 
-        self.assertEqual( processed_text, 'DD' )
-        self.assertEqual( span_map, [ ((0, 7), (0, 2)) ] )
-
-        decorated_text, decorated_processed_text = utils.decorate(text, processed_text, span_map)
+        decorated_text, decorated_processed_text = procesor.decorate()
 
         self.assertEqual( decorated_text, '0000000' )
         self.assertEqual( decorated_processed_text, '00' )
@@ -33,12 +33,14 @@ class IntersectingGroupTestCase(TestCase):
             ( r'(C BBBBB)',  { 1: 'DD' } ),
         ]
 
-        processed_text, span_map = process(text, modifiers)
+        with Processor(text) as procesor:
+            for pattern, replacement_map in modifiers:
+                procesor.process(pattern, replacement_map)
+                
+        self.assertEqual( procesor.processed_text, 'DD C' )
+        self.assertEqual( procesor.span_map, [ ((0, 5), (0, 2)) ] )
 
-        self.assertEqual( processed_text, 'DD C' )
-        self.assertEqual( span_map, [ ((0, 5), (0, 2)) ] )
-
-        decorated_text, decorated_processed_text = utils.decorate(text, processed_text, span_map)
+        decorated_text, decorated_processed_text = procesor.decorate()
 
         self.assertEqual( decorated_text, '00000 C' )
         self.assertEqual( decorated_processed_text, '00 C' )
@@ -51,12 +53,14 @@ class IntersectingGroupTestCase(TestCase):
             ( r'(BBBBB C)',  { 1: 'DD' } ),
         ]
 
-        processed_text, span_map = process(text, modifiers)
+        with Processor(text) as procesor:
+            for pattern, replacement_map in modifiers:
+                procesor.process(pattern, replacement_map)
+                
+        self.assertEqual( procesor.processed_text, 'C DD' )
+        self.assertEqual( procesor.span_map, [ ((2, 7), (2, 4)) ] )
 
-        self.assertEqual( processed_text, 'C DD' )
-        self.assertEqual( span_map, [ ((2, 7), (2, 4)) ] )
-
-        decorated_text, decorated_processed_text = utils.decorate(text, processed_text, span_map)
+        decorated_text, decorated_processed_text = procesor.decorate()
 
         self.assertEqual( decorated_text, 'C 00000' )
         self.assertEqual( decorated_processed_text, 'C 00' )
@@ -69,12 +73,14 @@ class IntersectingGroupTestCase(TestCase):
             ( r'(BBEBB)',  { 1: 'DD' } ),
         ]
 
-        processed_text, span_map = process(text, modifiers)
+        with Processor(text) as procesor:
+            for pattern, replacement_map in modifiers:
+                procesor.process(pattern, replacement_map)
+                
+        self.assertEqual( procesor.processed_text, 'C DD C' )
+        self.assertEqual( procesor.span_map, [ ((2, 5), (2, 4)) ] )
 
-        self.assertEqual( processed_text, 'C DD C' )
-        self.assertEqual( span_map, [ ((2, 5), (2, 4)) ] )
-
-        decorated_text, decorated_processed_text = utils.decorate(text, processed_text, span_map)
+        decorated_text, decorated_processed_text = procesor.decorate()
 
         self.assertEqual( decorated_text, 'C 000 C' )
         self.assertEqual( decorated_processed_text, 'C 00 C' )
@@ -88,12 +94,14 @@ class IntersectingGroupTestCase(TestCase):
             ( r'(C D)D',  { 1: 'FF' } ),
         ]
 
-        processed_text, span_map = process(text, modifiers)
+        with Processor(text) as procesor:
+            for pattern, replacement_map in modifiers:
+                procesor.process(pattern, replacement_map)
+                
+        self.assertEqual( procesor.processed_text, ' FFD C ' )
+        self.assertEqual( procesor.span_map, [ ((1, 6), (1, 4)) ] )
 
-        self.assertEqual( processed_text, ' FFD C ' )
-        self.assertEqual( span_map, [ ((1, 6), (1, 4)) ] )
-
-        decorated_text, decorated_processed_text = utils.decorate(text, processed_text, span_map)
+        decorated_text, decorated_processed_text = procesor.decorate()
 
         self.assertEqual( decorated_text, ' 00000 C ' )
         self.assertEqual( decorated_processed_text, ' 000 C ' )
@@ -106,15 +114,17 @@ class IntersectingGroupTestCase(TestCase):
 
         text = ' AAAB'
 
-        processed_text, span_map = process(text, modifiers)
-        self.assertEqual( processed_text, ' CCC CCCB' )
-        self.assertEqual( span_map, [((1, 5), (1, 9))] )
+        with Processor(text) as procesor:
+            for pattern, replacement_map in modifiers:
+                procesor.process(pattern, replacement_map)
+                
+        self.assertEqual( procesor.processed_text, ' CCC CCCB' )
+        self.assertEqual( procesor.span_map, [((1, 5), (1, 9))] )
 
-        decorated_text, decorated_processed_text = utils.decorate(text, processed_text, span_map)
+        decorated_text, decorated_processed_text = procesor.decorate()
 
         self.assertEqual( decorated_text, ' 0000' )
         self.assertEqual( decorated_processed_text, ' 00000000' )
-
 
     def test_intersection_7(self):
         modifiers = [
@@ -124,11 +134,14 @@ class IntersectingGroupTestCase(TestCase):
 
         text = 'BAAA '
 
-        processed_text, span_map = process(text, modifiers)
-        self.assertEqual( processed_text, 'BCCC CCC ' )
-        self.assertEqual( span_map, [((0, 4), (0, 8))] )
+        with Processor(text) as procesor:
+            for pattern, replacement_map in modifiers:
+                procesor.process(pattern, replacement_map)
+                
+        self.assertEqual( procesor.processed_text, 'BCCC CCC ' )
+        self.assertEqual( procesor.span_map, [((0, 4), (0, 8))] )
 
-        decorated_text, decorated_processed_text = utils.decorate(text, processed_text, span_map)
+        decorated_text, decorated_processed_text = procesor.decorate()
 
         self.assertEqual( decorated_text, '0000 ' )
         self.assertEqual( decorated_processed_text, '00000000 ' )
@@ -142,12 +155,14 @@ class IntersectingGroupTestCase(TestCase):
             ( r'(HJK)G',  { 1: 'FF' } ),
         ]
 
-        processed_text, span_map = process(text, modifiers)
+        with Processor(text) as procesor:
+            for pattern, replacement_map in modifiers:
+                procesor.process(pattern, replacement_map)
+                
+        self.assertEqual( procesor.processed_text, 'FFG DD ' )
+        self.assertEqual( procesor.span_map, [ ((0, 8), (0, 3)), ((9, 10), (4, 6)) ] )
 
-        self.assertEqual( processed_text, 'FFG DD ' )
-        self.assertEqual( span_map, [ ((0, 8), (0, 3)), ((9, 10), (4, 6)) ] )
-
-        decorated_text, decorated_processed_text = utils.decorate(text, processed_text, span_map)
+        decorated_text, decorated_processed_text = procesor.decorate()
 
         self.assertEqual( decorated_text, '00000000 1 ' )
         self.assertEqual( decorated_processed_text, '000 11 ' )
@@ -161,17 +176,17 @@ class IntersectingGroupTestCase(TestCase):
 
         text = ' etc.'
 
-        processed_text, span_map = process(text, modifiers)
+        with Processor(text) as procesor:
+            for pattern, replacement_map in modifiers:
+                procesor.process(pattern, replacement_map)
+                
+        self.assertEqual( procesor.processed_text, ' et cetera.' )
+        self.assertEqual( procesor.span_map, [ ((1, 5), (1, 11)) ] )
 
-        self.assertEqual( processed_text, ' et cetera.' )
-        self.assertEqual( span_map, [ ((1, 5), (1, 11)) ] )
-
-        decorated_text, decorated_processed_text = utils.decorate(text, processed_text, span_map)
+        decorated_text, decorated_processed_text = procesor.decorate()
 
         self.assertEqual( decorated_text, ' 0000' )
         self.assertEqual( decorated_processed_text, ' 0000000000' )
-
-
 
 if __name__ == '__main__':
     main()

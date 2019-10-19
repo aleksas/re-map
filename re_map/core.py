@@ -2,18 +2,12 @@ import re
 from math import ceil, floor
 from .utils import decorate
 
-__verbose__ = False
-
 def span_len_delta(span_1, span_2):
     return (span_1[1] - span_1[0]) - (span_2[1] - span_2[0])
 
 def span_rtrim(span, value):
     if span[0] < value:
         return min(span[0], value), min(span[1], value)
-
-def swap_span_map(span_map):
-    for source, destination in span_map:
-        yield destination, source, span_len_delta(source, destination)
 
 def span_offset(span, replacement_span_map):
     delta_start, delta_end = 0, 0
@@ -149,10 +143,6 @@ def insert(entry, replacement_span_map, allow_intersect=True):
     for j in range(i+1, len(replacement_span_map)):
         replacement_span_map[j] = replacement_span_map[j][0], (replacement_span_map[j][1][0] + entry[2], replacement_span_map[j][1][1] + entry[2]), replacement_span_map[j][2]
 
-def clean_replacement_span_map(replacement_span_map):
-    for i, entry in enumerate(replacement_span_map):
-        replacement_span_map[i] = entry[0], entry[1]
-
 def repl(match, replacement_map, replacement_span_map):
     match_string = match.group()
     match_start = match.span(0)[0]
@@ -193,46 +183,60 @@ def update_span_map(replacement_span_map, tmp_replacement_span_map):
     for entry in tmp_replacement_span_map:
         insert(entry, replacement_span_map)
 
-def process(text, modifiers, replacement_span_map=None):
-    processed_text = str(text)
-    replacement_span_map = replacement_span_map if replacement_span_map else []
-    if(__verbose__):
-        print ('text:', text)
+class Processor:
+    def __init__(self, text):
+        self.__processing = False
+        self.__text = str(text)
+        self.__processed_text = str(text)
+        self.__replacement_span_map = []
+        self.__span_map = []
 
-    for i, modifier in enumerate(modifiers):
-        if len(modifier) == 2:
-            pattern, replacement_map = modifier
-            flags = 0
-        elif len(modifier) == 3:
-            pattern, replacement_map, flags = modifier
+    def process(self, pattern, replacement_map, count=0, flags=0):
+        if not self.__processing:
+            raise Exception("Processing session not initiated")
 
         tmp_replacement_span_map = []
 
-        if(__verbose__):
-            print (i, 'pattern:', pattern)
-            print (i, 'replacement_map:', replacement_map)
-            print (i, 'in:', processed_text)
-
-        processed_text = re.sub(
+        self.__processed_text = re.sub(
             pattern = pattern,
             repl = lambda match: repl(match, replacement_map, tmp_replacement_span_map),
-            string = processed_text,
+            string = self.__processed_text,
+            count=count,
             flags = flags
         )
 
-        normalize_source_spans(replacement_span_map, tmp_replacement_span_map)
+        normalize_source_spans(self.__replacement_span_map, tmp_replacement_span_map)
 
-        if(__verbose__):
-            print (i, replacement_span_map )
-            print (i, tmp_replacement_span_map)
+        update_span_map(self.__replacement_span_map, tmp_replacement_span_map)
+    
+    def swap(self):
+        self.__replacement_span_map = [(destination, source, -delta) for source, destination, delta in self.__replacement_span_map]
+        
+        tmp = self.__text
+        self.__text = self.__processed_text
+        self.__processed_text = tmp
+    
+    def decorate(self):
+        return decorate(self.__text, self.__processed_text, self.span_map)
 
-        update_span_map(replacement_span_map, tmp_replacement_span_map)
+    @property
+    def span_map(self):
+        return self.__span_map
 
-        if(__verbose__):
-            decorate(text, processed_text, replacement_span_map)
-            print (i, replacement_span_map )
-            print (i, 'out:', processed_text)
+    @property
+    def text(self):
+        return self.__text
 
-    clean_replacement_span_map(replacement_span_map)
+    @property
+    def processed_text(self):
+        return self.__processed_text
+    
+    def __enter__(self):
+        if self.__processing:
+            raise Exception("Already processing.")
+        self.__processing = True
+        return self
 
-    return processed_text, replacement_span_map
+    def __exit__(self, exc_type, exc_value, traceback):
+        self.__processing = False
+        self.__span_map = [(src, dst) for src, dst, _ in self.__replacement_span_map]
