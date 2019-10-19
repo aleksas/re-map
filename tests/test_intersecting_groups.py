@@ -16,7 +16,7 @@ class IntersectingGroupTestCase(TestCase):
         with Processor(text) as procesor:
             for pattern, replacement_map in modifiers:
                 procesor.process(pattern, replacement_map)
-                
+
         self.assertEqual( procesor.processed_text, 'DD' )
         self.assertEqual( procesor.span_map, [ ((0, 7), (0, 2)) ] )
 
@@ -36,7 +36,7 @@ class IntersectingGroupTestCase(TestCase):
         with Processor(text) as procesor:
             for pattern, replacement_map in modifiers:
                 procesor.process(pattern, replacement_map)
-                
+
         self.assertEqual( procesor.processed_text, 'DD C' )
         self.assertEqual( procesor.span_map, [ ((0, 5), (0, 2)) ] )
 
@@ -56,7 +56,7 @@ class IntersectingGroupTestCase(TestCase):
         with Processor(text) as procesor:
             for pattern, replacement_map in modifiers:
                 procesor.process(pattern, replacement_map)
-                
+
         self.assertEqual( procesor.processed_text, 'C DD' )
         self.assertEqual( procesor.span_map, [ ((2, 7), (2, 4)) ] )
 
@@ -76,7 +76,7 @@ class IntersectingGroupTestCase(TestCase):
         with Processor(text) as procesor:
             for pattern, replacement_map in modifiers:
                 procesor.process(pattern, replacement_map)
-                
+
         self.assertEqual( procesor.processed_text, 'C DD C' )
         self.assertEqual( procesor.span_map, [ ((2, 5), (2, 4)) ] )
 
@@ -97,7 +97,7 @@ class IntersectingGroupTestCase(TestCase):
         with Processor(text) as procesor:
             for pattern, replacement_map in modifiers:
                 procesor.process(pattern, replacement_map)
-                
+
         self.assertEqual( procesor.processed_text, ' FFD C ' )
         self.assertEqual( procesor.span_map, [ ((1, 6), (1, 4)) ] )
 
@@ -117,7 +117,7 @@ class IntersectingGroupTestCase(TestCase):
         with Processor(text) as procesor:
             for pattern, replacement_map in modifiers:
                 procesor.process(pattern, replacement_map)
-                
+
         self.assertEqual( procesor.processed_text, ' CCC CCCB' )
         self.assertEqual( procesor.span_map, [((1, 5), (1, 9))] )
 
@@ -137,7 +137,7 @@ class IntersectingGroupTestCase(TestCase):
         with Processor(text) as procesor:
             for pattern, replacement_map in modifiers:
                 procesor.process(pattern, replacement_map)
-                
+
         self.assertEqual( procesor.processed_text, 'BCCC CCC ' )
         self.assertEqual( procesor.span_map, [((0, 4), (0, 8))] )
 
@@ -158,7 +158,7 @@ class IntersectingGroupTestCase(TestCase):
         with Processor(text) as procesor:
             for pattern, replacement_map in modifiers:
                 procesor.process(pattern, replacement_map)
-                
+
         self.assertEqual( procesor.processed_text, 'FFG DD ' )
         self.assertEqual( procesor.span_map, [ ((0, 8), (0, 3)), ((9, 10), (4, 6)) ] )
 
@@ -179,7 +179,7 @@ class IntersectingGroupTestCase(TestCase):
         with Processor(text) as procesor:
             for pattern, replacement_map in modifiers:
                 procesor.process(pattern, replacement_map)
-                
+
         self.assertEqual( procesor.processed_text, ' et cetera.' )
         self.assertEqual( procesor.span_map, [ ((1, 5), (1, 11)) ] )
 

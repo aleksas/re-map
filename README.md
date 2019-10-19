@@ -32,7 +32,7 @@ modifiers = [
 ]
 
 text = 'Alexander G. Bell ate 10 apples & 8 cucumbers. The 1st apple was rotten, the 2nd was too, also the third, fourth etc.'
-        
+
 with Processor(text) as procesor:
     for pattern, replacement_map in modifiers:
         procesor.process(pattern, replacement_map)

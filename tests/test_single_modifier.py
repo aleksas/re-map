@@ -11,7 +11,7 @@ class SingleModifierTestCase(TestCase):
 
         with Processor(text) as procesor:
             procesor.process(pattern, replacement_map)
-                
+
         self.assertEqual( procesor.processed_text, 'CCDCCD' )
         self.assertEqual( procesor.span_map, [((0, 1), (0, 2)), ((1, 2), (2, 3)), ((2, 3), (3, 5)), ((3, 4), (5, 6))] )
 
@@ -26,7 +26,7 @@ class SingleModifierTestCase(TestCase):
 
         with Processor(text) as procesor:
             procesor.process(pattern, replacement_map)
-                
+
         self.assertEqual( procesor.processed_text, 'CDCD' )
         self.assertEqual( procesor.span_map, [((0, 2), (0, 1)), ((2, 3), (1, 2)), ((3, 5), (2, 3)), ((5, 6), (3, 4))] )
 
@@ -41,7 +41,7 @@ class SingleModifierTestCase(TestCase):
 
         with Processor(text) as procesor:
             procesor.process(pattern, replacement_map)
-                
+
         self.assertEqual( procesor.processed_text, 'CCDCCD' )
         self.assertEqual( procesor.span_map, [((0, 1), (0, 2)), ((1, 3), (2, 3)), ((3, 4), (3, 5)), ((4, 6), (5, 6))] )
 

@@ -62,7 +62,7 @@ class OtherTestCase(TestCase):
         with Processor(self.text_0) as procesor:
             for pattern, replacement_map in self.modifiers_0:
                 procesor.process(pattern, replacement_map)
-                
+
         self.assertEqual( procesor.processed_text, ' ZZZ YYY XXX WWW ' )
         self.assertEqual( procesor.span_map, self.span_map )
 
@@ -75,7 +75,7 @@ class OtherTestCase(TestCase):
         with Processor(self.text_1) as procesor:
             for pattern, replacement_map in self.modifiers_0:
                 procesor.process(pattern, replacement_map)
-                
+
         self.assertEqual( procesor.processed_text, ' ZZZ YYY ZZZ YYY ' )
         self.assertEqual( procesor.span_map, self.span_map )
 
@@ -114,7 +114,7 @@ class OtherTestCase(TestCase):
         with Processor(self.text_2) as procesor:
             for pattern, replacement_map in self.modifiers_0:
                 procesor.process(pattern, replacement_map)
-                
+
         self.assertEqual( procesor.processed_text, ' YYY ZZZ ZZZ YYY ' )
         self.assertEqual( procesor.span_map, self.span_map )
 
@@ -127,7 +127,7 @@ class OtherTestCase(TestCase):
         with Processor(self.text_0) as procesor:
             for pattern, replacement_map in self.modifiers_3:
                 procesor.process(pattern, replacement_map)
-                
+
         self.assertEqual( procesor.processed_text, ' CCC CCC CCC CCC ' )
         self.assertEqual( procesor.span_map, self.span_map_2 )
 
@@ -140,7 +140,7 @@ class OtherTestCase(TestCase):
         with Processor(self.text_0) as procesor:
             for pattern, replacement_map in self.modifiers_4:
                 procesor.process(pattern, replacement_map)
-                
+
         self.assertEqual( procesor.processed_text, ' CCCC CCCC CCCC CCCC ' )
         self.assertEqual( procesor.span_map, self.span_map_3 )
 
@@ -164,7 +164,7 @@ class OtherTestCase(TestCase):
         pattern_2, replacement_map_2 = r'(AA) ',  { 1: 'DDD DDD' }
 
         with Processor(text) as procesor:
-            procesor.process(pattern_1, replacement_map_1)            
+            procesor.process(pattern_1, replacement_map_1)
             procesor.swap()
             procesor.process(pattern_2, replacement_map_2)
 

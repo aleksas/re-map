@@ -5,7 +5,7 @@ from unittest import TestCase, main
 from re_map import Processor
 
 class MatchingGroupTestCase(TestCase):
-    ''' 
+    '''
     Tests perfect matching match group replacements.
     '''
     def test_matching_1(self):
@@ -26,7 +26,7 @@ class MatchingGroupTestCase(TestCase):
         with Processor(text) as procesor:
             for pattern, replacement_map in modifiers:
                 procesor.process(pattern, replacement_map)
-                
+
         self.assertEqual( procesor.processed_text, ' YYY YYY YYY YYY ' )
         self.assertEqual( procesor.span_map, ref_span_map )
 
@@ -53,7 +53,7 @@ class MatchingGroupTestCase(TestCase):
         with Processor(text) as procesor:
             for pattern, replacement_map in modifiers:
                 procesor.process(pattern, replacement_map)
-                
+
         self.assertEqual( procesor.processed_text, ' QQQQQQQ QQQQQQQ XXXXXX DDD ' )
         self.assertEqual( procesor.span_map, ref_span_map )
 
@@ -73,7 +73,7 @@ class MatchingGroupTestCase(TestCase):
         with Processor(text) as procesor:
             for pattern, replacement_map in modifiers:
                 procesor.process(pattern, replacement_map)
-                
+
         self.assertEqual( procesor.processed_text, 'DDZDD' )
         self.assertEqual( procesor.span_map, [ ((0, 1), (0, 2)), ((2, 3), (3, 5)) ] )
 
@@ -93,7 +93,7 @@ class MatchingGroupTestCase(TestCase):
         with Processor(text) as procesor:
             for pattern, replacement_map in modifiers:
                 procesor.process(pattern, replacement_map)
-                
+
         self.assertEqual( procesor.processed_text, ' CC ' )
         self.assertEqual( procesor.span_map, [ ((1, 4), (1, 3)) ] )
 
@@ -114,7 +114,7 @@ class MatchingGroupTestCase(TestCase):
         with Processor(text) as procesor:
             for pattern, replacement_map in modifiers:
                 procesor.process(pattern, replacement_map)
-                
+
         self.assertEqual( procesor.processed_text, ' CC FFFF ' )
         self.assertEqual( procesor.span_map, [ ((1, 4), (1, 3)), ((5, 6), (4, 8)) ] )
 
@@ -135,7 +135,7 @@ class MatchingGroupTestCase(TestCase):
         with Processor(text) as procesor:
             for pattern, replacement_map in modifiers:
                 procesor.process(pattern, replacement_map)
-                
+
         self.assertEqual( procesor.processed_text, ' CC FFFF CC FFFF ' )
         self.assertEqual( procesor.span_map, [ ((1, 4), (1, 3)), ((5, 6), (4, 8)), ((7, 10), (9, 11)), ((11, 12), (12, 16)) ] )
 

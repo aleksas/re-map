@@ -73,7 +73,7 @@ class BundledModifiersTestCase(TestCase):
         with Processor(text) as procesor:
             for pattern, replacement_map in modifiers:
                 procesor.process(pattern, replacement_map)
-                
+
         self.assertEqual( procesor.processed_text, 'CC' )
         self.assertEqual( procesor.span_map, [((0, 1), (0, 0)), ((1, 3), (0, 2)), ((3, 4), (2, 2))] )
 

@@ -208,14 +208,14 @@ class Processor:
         normalize_source_spans(self.__replacement_span_map, tmp_replacement_span_map)
 
         update_span_map(self.__replacement_span_map, tmp_replacement_span_map)
-    
+
     def swap(self):
         self.__replacement_span_map = [(destination, source, -delta) for source, destination, delta in self.__replacement_span_map]
-        
+
         tmp = self.__text
         self.__text = self.__processed_text
         self.__processed_text = tmp
-    
+
     def decorate(self):
         return decorate(self.__text, self.__processed_text, self.span_map)
 
@@ -230,7 +230,7 @@ class Processor:
     @property
     def processed_text(self):
         return self.__processed_text
-    
+
     def __enter__(self):
         if self.__processing:
             raise Exception("Already processing.")
