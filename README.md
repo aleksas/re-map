@@ -44,7 +44,7 @@ print (text)
 print (decorated_text)
 print (procesor.processed_text)
 print (decorated_processed_text)
-print (span_map)
+print (procesor.span_map)
 ```
 
 ## Output
