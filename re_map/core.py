@@ -1,7 +1,7 @@
 import re
 from math import ceil, floor
 from .utils import decorate
-from .fast import intersect, intersection, span_len_delta, span_length, span_rtrim
+from .slow import intersect, intersection, span_len_delta, span_length, span_rtrim
 
 def span_offset(span, replacement_span_map, delta_start=0, delta_end=0, delta_i=0):
     cached_delta_start = 0
@@ -33,35 +33,30 @@ def span_offset(span, replacement_span_map, delta_start=0, delta_end=0, delta_i=
     return delta_start, delta_end, cached_delta_start, cached_delta_end, delta_i + cached_delta_count
 
 def insert(entry, replacement_span_map, allow_intersect=True, offset=0):
-    intersecting = []
-
     i = 0
-    for i, (source_span, target_span, _) in enumerate(replacement_span_map[offset:]):
-        if (
-            (source_span[0] >= entry[0][1] or source_span[0] >= entry[0][0]) or
+    for source_span, target_span, _ in replacement_span_map[offset:]:
+        if ((source_span[0] >= entry[0][1] or source_span[0] >= entry[0][0]) or
             (target_span[0] >= entry[1][1] or target_span[0] >= entry[1][0]) or
             (intersect(source_span, entry[0])) or
-            (intersect(target_span, entry[1]))
-            ):
+            (intersect(target_span, entry[1]))):
             break
         i+=1
 
-    for j in range(i, len(replacement_span_map) - offset):
-        source_span, target_span, _ = replacement_span_map[offset + j]
+    merge_entries = []
+    for e in replacement_span_map[offset:]:
+        source_span, target_span, _ = e
         if source_span[0] >= entry[0][1] and target_span[0] >= entry[1][1]:
             break
         if intersect(source_span, entry[0]):
-            intersecting.append(j)
             if not allow_intersect:
                 raise ValueError("Intersecting groups not allowed.")
+            merge_entries.append(e)
 
-    if len(intersecting):
+    if merge_entries:
         entry_source_length = span_length(entry[0])
         entry_target_length = span_length(entry[1])
         source_length, target_length = 0, 0
         source_span_start, target_span_start = entry[0][0], entry[1][0]
-
-        merge_entries = [replacement_span_map[offset+k] for k in intersecting]
 
         aligned_entry_target_span = (entry[1][0], entry[1][1] - entry[2])
         for e in merge_entries:
@@ -91,7 +86,7 @@ def insert(entry, replacement_span_map, allow_intersect=True, offset=0):
 
     return i + offset
 
-def repl(match, replacement_map, replacement_span_map, cache):
+def repl(match, replacement_map, replacement_map_keys, replacement_span_map, cache):
     match_string = match.group()
     match_start = match.span(0)[0]
     if len(match.regs) == 1:
@@ -101,7 +96,7 @@ def repl(match, replacement_map, replacement_span_map, cache):
 
     current_match_delta = 0
 
-    for i in sorted(replacement_map.keys()):
+    for i in replacement_map_keys:
         span = match.span(i)
         group_rel_span = span[0] - match_start, span[1] - match_start
 
@@ -129,12 +124,7 @@ def normalize_source_spans(replacement_span_map, tmp_replacement_span_map):
     delta_i = 0
     for i, (tmp_source_span, _, len_delta) in enumerate(tmp_replacement_span_map):
         delta_start, delta_end, cached_delta_start, cached_delta_end, delta_i = span_offset(tmp_source_span, replacement_span_map, cached_delta_start, cached_delta_end, delta_i)
-        tmp_replacement_span_map[i] = (tmp_source_span[0] - delta_start, tmp_source_span[1] -delta_end), tmp_replacement_span_map[i][1], len_delta
-
-def update_span_map(replacement_span_map, tmp_replacement_span_map):
-    offset = 0
-    for entry in tmp_replacement_span_map:
-        offset = insert(entry, replacement_span_map, offset=offset)
+        tmp_replacement_span_map[i] = (tmp_source_span[0] - delta_start, tmp_source_span[1] - delta_end), tmp_replacement_span_map[i][1], len_delta
 
 class Processor:
     def __init__(self, text):
@@ -151,9 +141,10 @@ class Processor:
         tmp_replacement_span_map = []
         cache = {'insert':0, 'offset':(0,0,0)}
 
+        replacement_map_keys = sorted(replacement_map.keys())
         self.__processed_text = re.sub(
             pattern = pattern,
-            repl = lambda match: repl(match, replacement_map, tmp_replacement_span_map, cache),
+            repl = lambda match: repl(match, replacement_map, replacement_map_keys, tmp_replacement_span_map, cache),
             string = self.__processed_text,
             count=count,
             flags = flags
@@ -161,7 +152,9 @@ class Processor:
 
         normalize_source_spans(self.__replacement_span_map, tmp_replacement_span_map)
 
-        update_span_map(self.__replacement_span_map, tmp_replacement_span_map)
+        offset = 0
+        for entry in tmp_replacement_span_map:
+            offset = insert(entry, self.__replacement_span_map, offset=offset)
 
     def swap(self):
         self.__replacement_span_map = [(destination, source, -delta) for source, destination, delta in self.__replacement_span_map]
