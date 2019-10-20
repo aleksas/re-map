@@ -87,7 +87,7 @@ def insert(entry, replacement_span_map, allow_intersect=True, offset=0):
     for j in range(i+1, len(replacement_span_map) - offset):
         jo = j + offset
         replacement_span_map[jo] = replacement_span_map[jo][0], (replacement_span_map[jo][1][0] + entry[2], replacement_span_map[jo][1][1] + entry[2]), replacement_span_map[jo][2]
-    
+
     return i + offset
 
 def repl(match, replacement_map, replacement_span_map):
