@@ -86,7 +86,8 @@ def insert(entry, replacement_span_map, allow_intersect=True, offset=0):
 
     for j in range(i+1, len(replacement_span_map) - offset):
         jo = j + offset
-        replacement_span_map[jo] = replacement_span_map[jo][0], (replacement_span_map[jo][1][0] + entry[2], replacement_span_map[jo][1][1] + entry[2]), replacement_span_map[jo][2]
+        old_entry = replacement_span_map[jo]
+        replacement_span_map[jo] = old_entry[0], (old_entry[1][0] + entry[2], old_entry[1][1] + entry[2]), old_entry[2]
 
     return i + offset
 
