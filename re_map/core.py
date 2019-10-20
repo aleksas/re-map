@@ -91,7 +91,7 @@ def insert(entry, replacement_span_map, allow_intersect=True, offset=0):
 
     return i + offset
 
-def repl(match, replacement_map, replacement_span_map):
+def repl(match, replacement_map, replacement_span_map, cache):
     match_string = match.group()
     match_start = match.span(0)[0]
     if len(match.regs) == 1:
@@ -100,7 +100,7 @@ def repl(match, replacement_map, replacement_span_map):
 
     current_match_delta = 0
 
-    for i in replacement_map.keys():
+    for i in sorted(replacement_map.keys()):
         span = match.span(i)
         group_rel_span = span[0] - match_start, span[1] - match_start
 
@@ -114,7 +114,7 @@ def repl(match, replacement_map, replacement_span_map):
 
         new_entry = span, span_target, span_len_delta(span_target, span)
 
-        insert(new_entry, replacement_span_map, allow_intersect=False)
+        cache[0] = insert(new_entry, replacement_span_map, allow_intersect=False, offset=cache[0])
         current_match_delta += new_entry[2]
 
     return match_string
@@ -148,10 +148,11 @@ class Processor:
             raise Exception("Processing session not initiated")
 
         tmp_replacement_span_map = []
+        offset_cache = [0]
 
         self.__processed_text = re.sub(
             pattern = pattern,
-            repl = lambda match: repl(match, replacement_map, tmp_replacement_span_map),
+            repl = lambda match: repl(match, replacement_map, tmp_replacement_span_map, offset_cache),
             string = self.__processed_text,
             count=count,
             flags = flags
