@@ -1,21 +1,20 @@
 cimport cython
 
-@cython.boundscheck(False)
-cpdef _max(int a, int b):
-    return a if a > b else b
+cdef inline int int_max(int a, int b): return a if a > b else b
+cdef inline int int_min(int a, int b): return a if a < b else b
 
 @cython.boundscheck(False)
-cpdef _min(int a, int b):
-    return a if a < b else b
-
-@cython.boundscheck(False)
-cpdef span_rtrim((int, int) span, value):
+cpdef span_rtrim((int, int) span, int value):
     if span[0] < value:
-        return _min(span[0], value), _min(span[1], value)
+        return (int_min(span[0], value), int_min(span[1], value))
     
 @cython.boundscheck(False)
 cpdef intersect((int, int) span_a, (int, int) span_b):
-    cdef (int, int) span = (_max(span_a[0], span_b[0]), _min(span_a[1], span_b[1]))
+    return int_max(span_a[0], span_b[0]) < int_min(span_a[1], span_b[1])
+
+@cython.boundscheck(False)
+cpdef intersection((int, int) span_a, (int, int) span_b):
+    cdef (int, int) span = (int_max(span_a[0], span_b[0]), int_min(span_a[1], span_b[1]))
     if span[0] < span[1]:
         return span
 

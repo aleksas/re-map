@@ -1,23 +1,24 @@
 import re
 from math import ceil, floor
 from .utils import decorate
-from .fast import intersect, span_len_delta, span_length, span_rtrim
+from .fast import intersect, intersection, span_len_delta, span_length, span_rtrim
 
 def span_offset(span, replacement_span_map):
     delta_start, delta_end = 0, 0
     for span_source, span_target, _ in replacement_span_map:
-        d = span_len_delta(span_target, span_source)
         if span_target[1] <= span[0]:
+            d = span_len_delta(span_target, span_source)
             delta_end += d
             delta_start += d
         else:
-            target_trimmed_start = span_rtrim(span_target, span[0])
             target_trimmed_end = span_rtrim(span_target, span[1])
-
             if target_trimmed_end:
+                d = span_len_delta(span_target, span_source)
                 # int() and 1.0 multipliers for 2.7 compatibility
                 ratio_end = 1.0 * span_length(target_trimmed_end) / span_length(span_target)
                 delta_end += int(floor(d * ratio_end))
+
+                target_trimmed_start = span_rtrim(span_target, span[0])
                 if target_trimmed_start:
                     ratio_start = 1.0 * span_length(target_trimmed_start) / span_length(span_target)
                     delta_start += int(ceil(d * ratio_start))
@@ -63,9 +64,9 @@ def insert(entry, replacement_span_map, allow_intersect=True):
 
         aligned_entry_target_span = (entry[1][0], entry[1][1] - entry[2])
         for e in merge_entries:
-            source_intersection = intersect(e[0], entry[0])
+            source_intersection = intersection(e[0], entry[0])
             entry_source_length -= span_length(source_intersection) if source_intersection else 0
-            target_intersection = intersect(e[1], aligned_entry_target_span)
+            target_intersection = intersection(e[1], aligned_entry_target_span)
             entry_target_length -= span_length(target_intersection) if target_intersection else 0
             source_length += span_length(e[0])
             target_length += span_length(e[1])
