@@ -96,7 +96,8 @@ def repl(match, replacement_map, replacement_span_map, cache):
     match_start = match.span(0)[0]
     if len(match.regs) == 1:
         raise Exception('No match groups in regex pattern.')
-    _, delta, _, _, _ = span_offset(match.span(1), replacement_span_map)
+    _, delta_end, c_delta_start, c_delta_end, c_delta_i = span_offset(match.span(1), replacement_span_map, cache['offset'][0], cache['offset'][1], cache['offset'][2])
+    cache['offset'] = (c_delta_start, c_delta_end, c_delta_i)
 
     current_match_delta = 0
 
@@ -107,14 +108,14 @@ def repl(match, replacement_map, replacement_span_map, cache):
         replacement = replacement_map[i] if isinstance(replacement_map[i], str) else replacement_map[i](match.group(i))
         match_string = match_string[0:group_rel_span[0] + current_match_delta] + replacement + match_string[group_rel_span[1] + current_match_delta:]
 
-        match_delta = delta + current_match_delta
+        match_delta = delta_end + current_match_delta
         group_rel_span_alligned = group_rel_span[0] + match_delta, group_rel_span[1] + match_delta
 
         span_target = group_rel_span_alligned[0] + match_start, group_rel_span_alligned[0] + len(replacement) + match_start
 
         new_entry = span, span_target, span_len_delta(span_target, span)
 
-        cache[0] = insert(new_entry, replacement_span_map, allow_intersect=False, offset=cache[0])
+        cache['insert'] = insert(new_entry, replacement_span_map, allow_intersect=False, offset=cache['insert'])
         current_match_delta += new_entry[2]
 
     return match_string
@@ -148,11 +149,11 @@ class Processor:
             raise Exception("Processing session not initiated")
 
         tmp_replacement_span_map = []
-        offset_cache = [0]
+        cache = {'insert':0, 'offset':(0,0,0)}
 
         self.__processed_text = re.sub(
             pattern = pattern,
-            repl = lambda match: repl(match, replacement_map, tmp_replacement_span_map, offset_cache),
+            repl = lambda match: repl(match, replacement_map, tmp_replacement_span_map, cache),
             string = self.__processed_text,
             count=count,
             flags = flags
