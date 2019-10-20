@@ -1,3 +1,6 @@
 .cache
 *.pyc
 .vscode
+build
+re_map/*.c
+re_map/*.so
