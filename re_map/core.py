@@ -32,15 +32,11 @@ def span_offset(span, replacement_span_map, delta_start=0, delta_end=0, delta_i=
 
     return delta_start, delta_end, cached_delta_start, cached_delta_end, delta_i + cached_delta_count
 
-def insert(entry, replacement_span_map, allow_intersect=True):
-    def validate(source_span, ref_source_span):
-        if intersect(ref_source_span, source_span):
-            raise Exception("Illegal span intersection")
-
+def insert(entry, replacement_span_map, allow_intersect=True, offset=0):
     intersecting = []
 
     i = 0
-    for i, (source_span, target_span, _) in enumerate(replacement_span_map):
+    for i, (source_span, target_span, _) in enumerate(replacement_span_map[offset:]):
         if (
             (source_span[0] >= entry[0][1] or source_span[0] >= entry[0][0]) or
             (target_span[0] >= entry[1][1] or target_span[0] >= entry[1][0]) or
@@ -50,8 +46,8 @@ def insert(entry, replacement_span_map, allow_intersect=True):
             break
         i+=1
 
-    for j in range(i, len(replacement_span_map)):
-        source_span, target_span, _ = replacement_span_map[j]
+    for j in range(i, len(replacement_span_map) - offset):
+        source_span, target_span, _ = replacement_span_map[offset + j]
         if source_span[0] >= entry[0][1] and target_span[0] >= entry[1][1]:
             break
         if intersect(source_span, entry[0]):
@@ -65,7 +61,7 @@ def insert(entry, replacement_span_map, allow_intersect=True):
         source_length, target_length = 0, 0
         source_span_start, target_span_start = entry[0][0], entry[1][0]
 
-        merge_entries = [replacement_span_map[k] for k in intersecting]
+        merge_entries = [replacement_span_map[offset+k] for k in intersecting]
 
         aligned_entry_target_span = (entry[1][0], entry[1][1] - entry[2])
         for e in merge_entries:
@@ -86,16 +82,13 @@ def insert(entry, replacement_span_map, allow_intersect=True):
         for e in merge_entries:
             replacement_span_map.remove(e)
 
-    if i > 0:
-        validate(entry[0], replacement_span_map[i-1][0])
+    replacement_span_map.insert(offset + i, entry)
 
-    replacement_span_map.insert(i, entry)
-
-    if i < len(replacement_span_map) - 1:
-        validate(entry[0], replacement_span_map[i+1][0])
-
-    for j in range(i+1, len(replacement_span_map)):
-        replacement_span_map[j] = replacement_span_map[j][0], (replacement_span_map[j][1][0] + entry[2], replacement_span_map[j][1][1] + entry[2]), replacement_span_map[j][2]
+    for j in range(i+1, len(replacement_span_map) - offset):
+        jo = j + offset
+        replacement_span_map[jo] = replacement_span_map[jo][0], (replacement_span_map[jo][1][0] + entry[2], replacement_span_map[jo][1][1] + entry[2]), replacement_span_map[jo][2]
+    
+    return i + offset
 
 def repl(match, replacement_map, replacement_span_map):
     match_string = match.group()
@@ -137,8 +130,9 @@ def normalize_source_spans(replacement_span_map, tmp_replacement_span_map):
         tmp_replacement_span_map[i] = (tmp_source_span[0] - delta_start, tmp_source_span[1] -delta_end), tmp_replacement_span_map[i][1], len_delta
 
 def update_span_map(replacement_span_map, tmp_replacement_span_map):
+    offset = 0
     for entry in tmp_replacement_span_map:
-        insert(entry, replacement_span_map)
+        offset = insert(entry, replacement_span_map, offset=offset)
 
 class Processor:
     def __init__(self, text):
