@@ -3,11 +3,12 @@ python:
 - '2.7'
 - '3.6'
 - '3.7'
-- '3.7-dev'
-- '3.8-dev'
 - 'nightly'
 script:
 - pytest
+install:
+    - pip install -q cython
+    - python setup.py  build_ext --inplace
 deploy:
   provider: pypi
   user: aleksas

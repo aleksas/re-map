@@ -1,13 +1,7 @@
 import re
 from math import ceil, floor
 from .utils import decorate
-
-def span_len_delta(span_1, span_2):
-    return (span_1[1] - span_1[0]) - (span_2[1] - span_2[0])
-
-def span_rtrim(span, value):
-    if span[0] < value:
-        return min(span[0], value), min(span[1], value)
+from .fast import intersect, span_len_delta, span_length, span_rtrim
 
 def span_offset(span, replacement_span_map):
     delta_start, delta_end = 0, 0
@@ -31,52 +25,6 @@ def span_offset(span, replacement_span_map):
                 break
 
     return delta_start, delta_end
-
-def intersect(span_a, span_b):
-    span = max(span_a[0], span_b[0]), min(span_a[1], span_b[1])
-    if span[0] < span[1]:
-        return span
-
-def merge(span_a, span_b):
-    return min(span_a[0], span_b[0]), max(span_a[1], span_b[1])
-
-def merge_spans(spans):
-    merged_span = None
-    for span in spans:
-        if not merged_span:
-            merged_span = span
-
-        merged_span = merge(merged_span, span)
-    return merged_span
-
-def merge_intersecting_spans(spans):
-    current = None
-    for span in spans:
-        if not current:
-            current = span
-
-        if intersect(current, span):
-            current = merge(current, span)
-        else:
-            yield current
-            current = None
-
-    if current:
-        yield current
-
-def span_length(span):
-    return span[1] - span[0]
-
-def span_arr_length(spans):
-    length = 0
-    for span in spans:
-        length += span_length(span)
-    return length
-
-def sum_entry_deltas(entries):
-    res = 0
-    for entry in entries:
-        res += span_len_delta(entry[1], entry[0])
 
 def insert(entry, replacement_span_map, allow_intersect=True):
     def validate(source_span, ref_source_span):
