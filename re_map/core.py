@@ -82,10 +82,6 @@ def insert(entry, replacement_span_map, allow_intersect=True, offset=0):
     for j, (source_span, target_span, len_delta) in enumerate(replacement_span_map[i+offset+1:]):
         replacement_span_map[i + offset + 1 + j] = source_span, (target_span[0] + entry[2], target_span[1] + entry[2]), len_delta
 
-    #for j in range(i+offset+1, len(replacement_span_map)):
-    #    source_span, target_span, len_delta = replacement_span_map[j]
-    #    replacement_span_map[j] = source_span, (target_span[0] + entry[2], target_span[1] + entry[2]), len_delta
-
     return i + offset
 
 def repl(match, replacement_map, replacement_map_keys, replacement_span_map, cache):
