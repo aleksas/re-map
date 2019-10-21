@@ -1,5 +1,6 @@
 import re
 from math import ceil, floor
+from json import dump, load
 from .utils import decorate
 from .slow import intersect, intersection, span_len_delta, span_length, span_rtrim
 
@@ -124,13 +125,22 @@ def normalize_source_spans(replacement_span_map, tmp_replacement_span_map):
         delta_start, delta_end, cached_delta_start, cached_delta_end, delta_i = span_offset(tmp_source_span, replacement_span_map, cached_delta_start, cached_delta_end, delta_i)
         tmp_replacement_span_map[i] = (tmp_source_span[0] - delta_start, tmp_source_span[1] - delta_end), tmp_replacement_span_map[i][1], len_delta
 
+def init_replacement_span_map(replacement_span_map):
+    new_span_map = []
+    new_replacement_span_map = []
+    if replacement_span_map:
+        for source_span, target_span in replacement_span_map:
+            entry =  (tuple(source_span), tuple(target_span), span_len_delta(target_span, source_span))
+            new_replacement_span_map.append( entry )
+            new_span_map.append( entry[:2] )
+    return new_replacement_span_map, new_span_map
+
 class Processor:
-    def __init__(self, text):
+    def __init__(self, text, processed_text=None, replacement_span_map=None):
         self.__processing = False
         self.__text = str(text)
-        self.__processed_text = str(text)
-        self.__replacement_span_map = []
-        self.__span_map = []
+        self.__processed_text = str(processed_text) if processed_text else str(text)
+        self.__replacement_span_map, self.__span_map = init_replacement_span_map(replacement_span_map)
 
     def process(self, pattern, replacement_map, count=0, flags=0):
         if not self.__processing:
@@ -163,6 +173,23 @@ class Processor:
 
     def decorate(self):
         return decorate(self.__text, self.__processed_text, self.span_map)
+
+    @staticmethod
+    def load(fp):
+        state = load(fp)
+        return Processor(state['text'], state['processed_text'], state['span_map'])
+
+    def save(self, fp):
+        if self.__processing:
+            raise Exception("Saving state in processing mode not allowed")
+
+        state = {
+            'text': self.text,
+            'processed_text': self.processed_text,
+            'span_map': self.span_map
+        }
+
+        dump(state, fp)
 
     @property
     def span_map(self):
