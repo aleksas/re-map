@@ -177,13 +177,11 @@ class Processor:
         return decorate(self.__text, self.__processed_text, self.span_map)
     
     @staticmethod
-    def load(filename):
-        with open(filename, 'rt') as fp:
-            state = load(fp)
-
+    def load(fp):
+        state = load(fp)
         return Processor(state['text'], state['processed_text'], state['span_map'])
 
-    def save(self, filename):
+    def save(self, fp):
         if self.__processing:
             raise Exception("Saving state in processing mode not allowed")
 
@@ -192,9 +190,8 @@ class Processor:
             'processed_text': self.processed_text,
             'span_map': self.span_map
         }
-        
-        with open(filename, 'wt') as fp:
-            dump(state, fp)
+
+        dump(state, fp)
 
     @property
     def span_map(self):
