@@ -175,7 +175,7 @@ class Processor:
 
     def decorate(self):
         return decorate(self.__text, self.__processed_text, self.span_map)
-    
+
     @staticmethod
     def load(fp):
         state = load(fp)
