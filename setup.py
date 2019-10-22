@@ -1,7 +1,7 @@
 import setuptools
-from Cython.Build import cythonize
+#from Cython.Build import cythonize
 import re, ast
-    
+
 _version_re = re.compile(r'__version__\s+=\s+(.*)')
 
 with open('re_map/__init__.py', 'rb') as f:
@@ -21,7 +21,7 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/aleksas/re-map",
     packages=setuptools.find_packages(),
-    ext_modules = cythonize(["re_map/fast.pyx"]),
+    #ext_modules = cythonize(["re_map/fast.pyx"]),
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
