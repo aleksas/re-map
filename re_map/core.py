@@ -138,8 +138,8 @@ def init_replacement_span_map(replacement_span_map):
 class Processor:
     def __init__(self, text, processed_text=None, replacement_span_map=None):
         self.__processing = False
-        self.__text = str(text)
-        self.__processed_text = str(processed_text) if processed_text else str(text)
+        self.__text = (text + '.')[:-1]
+        self.__processed_text = (processed_text + '.')[:-1] if processed_text else (text + '.')[:-1]
         self.__replacement_span_map, self.__span_map = init_replacement_span_map(replacement_span_map)
 
     def process(self, pattern, replacement_map, count=0, flags=0):

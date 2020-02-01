@@ -1,5 +1,4 @@
 import setuptools
-#from Cython.Build import cythonize
 import re, ast
 
 _version_re = re.compile(r'__version__\s+=\s+(.*)')
