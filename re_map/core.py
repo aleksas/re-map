@@ -85,8 +85,12 @@ def insert(entry, replacement_span_map, allow_intersect=True, offset=0):
 
     return i + offset
 
-def repl(match, replacement_map, replacement_map_keys, replacement_span_map, cache):
+def repl(match, replacement_map, replacement_map_keys, replacement_span_map, cache, exceptiions):
     match_string = match.group()
+
+    if exceptiions and match_string in exceptiions:
+        return match_string
+
     match_start = match.span(0)[0]
     if len(match.regs) == 1:
         raise Exception('No match groups in regex pattern.')
@@ -142,7 +146,7 @@ class Processor:
         self.__processed_text = (processed_text + '.')[:-1] if processed_text else (text + '.')[:-1]
         self.__replacement_span_map, self.__span_map = init_replacement_span_map(replacement_span_map)
 
-    def process(self, pattern, replacement_map, count=0, flags=0):
+    def process(self, pattern, replacement_map, count=0, flags=0, exceptions=None):
         if not self.__processing:
             raise Exception("Processing session not initiated")
 
@@ -152,7 +156,7 @@ class Processor:
         replacement_map_keys = sorted(replacement_map.keys())
         self.__processed_text = re.sub(
             pattern = pattern,
-            repl = lambda match: repl(match, replacement_map, replacement_map_keys, tmp_replacement_span_map, cache),
+            repl = lambda match: repl(match, replacement_map, replacement_map_keys, tmp_replacement_span_map, cache, exceptions),
             string = self.__processed_text,
             count=count,
             flags = flags
