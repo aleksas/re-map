@@ -85,13 +85,18 @@ def insert(entry, replacement_span_map, allow_intersect=True, offset=0):
 
     return i + offset
 
-def repl(match, replacement_map, replacement_map_keys, replacement_span_map, cache, exceptiions):
+def repl(match, replacement_map, replacement_map_keys, replacement_span_map, cache, exceptions):
     match_string = match.group()
 
-    if exceptiions:
-        for exception in exceptiions:
-            if re.match(exception, match_string):
-                return match_string
+    if exceptions:
+        for exception in exceptions:
+            if isinstance(exception, tuple):
+                pattern, replacement = exception 
+            else: # str
+                 pattern, replacement = exception, exception 
+                 
+            if re.match(pattern, match_string):
+                return replacement
 
     match_start = match.span(0)[0]
     if len(match.regs) == 1:
