@@ -88,8 +88,10 @@ def insert(entry, replacement_span_map, allow_intersect=True, offset=0):
 def repl(match, replacement_map, replacement_map_keys, replacement_span_map, cache, exceptiions):
     match_string = match.group()
 
-    if exceptiions and match_string in exceptiions:
-        return match_string
+    if exceptiions:
+        for exception in exceptiions:
+            if re.match(exception, match_string):
+                return match_string
 
     match_start = match.span(0)[0]
     if len(match.regs) == 1:
